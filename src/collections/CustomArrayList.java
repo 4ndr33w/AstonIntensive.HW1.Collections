@@ -93,7 +93,6 @@ public class CustomArrayList<T> implements List<T> {
         return true;
     }
 
-
     private void growArray() {
 
         int newLength = array.length == 0 ? DEFAULT_CAPACITY : (array.length * 3) / 2 + 1;
@@ -136,28 +135,58 @@ public class CustomArrayList<T> implements List<T> {
     }
 
     @Override
-    public boolean remove(Object o) {
+    public boolean remove(Object item) {
+
+        for (int i = 0; i < size; i++) {
+            if (item.equals(array[i])) {
+                remove(i);
+                return true;
+            }
+        }
         return false;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     @Override
-    public boolean contains(Object o) {
-        return false;
+    public int indexOf(Object item) {
+
+        for (int i = 0; i < size; i++) {
+            if (array[i].equals(item)) {
+                return i;
+            }
+        }
+        return -1;
     }
+
+    @Override
+    public boolean contains(Object item) {
+        return indexOf(item) != -1;
+    }
+
+    @Override
+    public T get(int index) {
+
+        if(index < 0 || index > size) {
+            throw new IndexOutOfBoundsException();
+        }
+        return array[index];
+    }
+
+    @Override
+    public T set(int index, T element) {
+        if(index < 0 || index > size) {
+            throw new IndexOutOfBoundsException();
+        }
+        else{
+            T oldValue = array[index];
+            array[index] = element;
+            return oldValue;
+        }
+    }
+
+
+
+
+
 
 
 
@@ -198,29 +227,8 @@ public class CustomArrayList<T> implements List<T> {
         return false;
     }
 
-
-
     @Override
-    public T get(int index) {
-        return null;
-    }
-
-    @Override
-    public T set(int index, T element) {
-        return null;
-    }
-
-
-
-
-
-    @Override
-    public int indexOf(Object o) {
-        return 0;
-    }
-
-    @Override
-    public int lastIndexOf(Object o) {
+    public int lastIndexOf(Object item) {
         return 0;
     }
 
