@@ -23,14 +23,14 @@ import collections.interfaces.CustomList;
  * </p>
  * @param <T> тип хранимых элементов
  * @see CustomList
- * @see Collection
+ * @see Iterable
  */
 public class CustomLinkedList<T> implements CustomList<T>, Serializable {
 
     /**
      * Счетчик изменений для fail-fast поведения
      */
-    private int modCount = 0; // Счетчик изменений для fail-fast поведения
+    transient int modCount = 0; // Счетчик изменений для fail-fast поведения
     /**
      * Текущий размер списка (количество элементов)
      */
@@ -50,8 +50,11 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
     }
 
     public CustomLinkedList(Collection<? extends T> c) {
-        this();
-        addAll(c);
+        Objects.requireNonNull(c, "Input array cannot be null");
+
+        for (T item : c) {
+            add(item);
+        }
     }
 
     public CustomLinkedList(T[] array) {
@@ -292,8 +295,11 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
 
 
     //------------------------------------------------------------------------
-    // Далее идут методы, которые не входили в задание, но
-    // необходимые для реализации интерфейса Collection
+    // Изначально я начал расширял CustomList интерфейсом Collection,
+    // по этому начал реализовывать остальные его методы.
+    // Ниже те методы, работу которых успел реализовать
+    // перед тем, как решил отказаться от этой идем
+    // и просто унаследоваться от Iterable<T>
     //------------------------------------------------------------------------
 
 
@@ -503,45 +509,5 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
                 throw new java.util.ConcurrentModificationException();
             }
         }
-    }
-
-    //------------------------------------------------------------------------
-    // следующие методы необходимы для реализации интерфейса Collection,
-    // но задание не предполагает их реализации
-    // в CustomArrayList я их реализовал
-    // Реализацию методов в этом классе сделаю по необходимости позже
-    //------------------------------------------------------------------------
-
-
-    @Override
-    public boolean containsAll(Collection<?> c) {
-        return false;
-    }
-
-    @Override
-    public boolean addAll(Collection<? extends T> c) {
-        return false;
-    }
-
-    @Override
-    public boolean removeAll(Collection<?> c) {
-        return false;
-    }
-
-    @Override
-    public boolean retainAll(Collection<?> c) {
-        return false;
-    }
-
-
-
-    @Override
-    public Object[] toArray() {
-        return new Object[0];
-    }
-
-    @Override
-    public <T1> T1[] toArray(T1[] a) {
-        return null;
     }
 }

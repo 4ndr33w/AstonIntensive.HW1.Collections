@@ -19,7 +19,7 @@ import collections.interfaces.CustomList;
  * </p>
  * @param <T> тип хранимых элементов
  * @see CustomList
- * @see Collection
+ * @see Iterable
  */
 public class CustomArrayList<T> implements CustomList<T>, Serializable {
 
@@ -258,8 +258,12 @@ public class CustomArrayList<T> implements CustomList<T>, Serializable {
     }
 
     //------------------------------------------------------------------------
-    // Далее идут методы, которые не входили в задание, но
-    // необходимые для реализации интерфейса Collection
+    // Изначально я наследовал CustomList<T> от интерфейса Collection,
+    // по этому начал реализовывать остальные его методы.
+    // Ниже те методы, работу которых успел реализовать
+    // перед тем, как решил отказаться от этой идем
+    // и просто унаследоваться от Iterable<T>
+    // для перебора коллекций в цикле foreach.
     //------------------------------------------------------------------------
 
     /**
@@ -322,16 +326,6 @@ public class CustomArrayList<T> implements CustomList<T>, Serializable {
     }
 
     /**
-     * Возвращает массив, содержащий все элементы этого списка в правильной последовательности.
-     *
-     * @return массив, содержащий все элементы этого списка
-     */
-    @Override
-    public Object[] toArray() {
-        return Arrays.copyOf(array, size);
-    }
-
-    /**
      * Возвращает индекс первой вхождения указанного элемента в этом списке,
      * или -1, если этот список не содержит элемента.
      *
@@ -367,161 +361,10 @@ public class CustomArrayList<T> implements CustomList<T>, Serializable {
         return indexOf(element) != -1;
     }
 
-    /**
-     * Возвращает массив, содержащий все элементы этого списка в правильной последовательности;
-     * тип возвращаемого массива во время выполнения совпадает с типом указанного массива.
-     *
-     * @param <T1> тип компонентов массива, который будет содержать коллекцию
-     * @param incArray массив, в который будут сохранены элементы этого списка,
-     *        если он достаточно большой; в противном случае выделяется новый массив того же типа
-     * @return массив, содержащий элементы этого списка
-     * @throws NullPointerException если указанный массив null
-     */
-    @Override
-    public <T1> T1[] toArray(T1[] incArray) {
-        Objects.requireNonNull(incArray, "Array cannot be null");
-
-        if (incArray.length < size) {
-            return (T1[]) Arrays.copyOf(array, size, incArray.getClass());
-        }
-
-        System.arraycopy(array, 0, incArray, 0, size);
-
-        if (incArray.length > size) {
-            incArray[size] = null;
-        }
-
-        return incArray;
-    }
-
-    /**
-     * Возвращает true, если этот список содержит все элементы указанной коллекции.
-     *
-     * @param collection коллекция, наличие которой будет проверяться в этом списке
-     * @return true, если этот список содержит все элементы указанной коллекции
-     * @throws NullPointerException если указанная коллекция null
-     */
-    @Override
-    public boolean containsAll(Collection<?> collection) {
-        Objects.requireNonNull(collection, "collection cannot be null");
-
-        if (collection.isEmpty()) {
-            return true;
-        }
-
-        for (Object item : collection) {
-            if (!contains(item)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Добавляет все элементы из указанной коллекции в конец этого списка.
-     *
-     * @param collection коллекция, содержащая элементы, которые будут добавлены в этот список
-     * @return true, если этот список изменился в результате вызова
-     * @throws NullPointerException если указанная коллекция null
-     */
-    @Override
-    public boolean addAll(Collection<? extends T> collection) {
-        Objects.requireNonNull(collection, "collection cannot be null");
-
-        if (collection.isEmpty()) {
-            return false;
-        }
-
-        Object[] incCollection = collection.toArray();
-        int incCollectionSize = incCollection.length;
-
-        ensureCapacity(size + incCollectionSize);
-
-        System.arraycopy(incCollection, 0, array, size, incCollectionSize);
-        size += incCollectionSize;
-
-        return incCollectionSize > 0;
-    }
-
     private void ensureCapacity(int minCapacity) {
         if (minCapacity - array.length > 0) {
             growArray(minCapacity);
         }
-    }
-
-    /**
-     * Удаляет из этого списка все его элементы, которые содержатся в указанной коллекции.
-     *
-     * @param collection коллекция, содержащая элементы, которые должны быть удалены из этого списка
-     * @return true, если этот список изменился в результате вызова
-     * @throws NullPointerException если указанная коллекция null
-     */
-    @Override
-    public boolean removeAll(Collection<?> collection) {
-        Objects.requireNonNull(collection, "collection cannot be null");
-
-        boolean modified = false;
-        final Object[] tempArray = array;
-        int i = 0;
-
-        for (; i < size; i++) {
-            if (collection.contains(tempArray[i])) {
-                modified = true;
-                break;
-            }
-        }
-
-        if (modified) {
-            int newSize = i;
-
-            for (i++; i < size; i++) {
-                if (!collection.contains(tempArray[i])) {
-                    tempArray[newSize++] = tempArray[i];
-                }
-            }
-
-            for (int k = newSize; k < size; k++) {
-                tempArray[k] = null;
-            }
-
-            size = newSize;
-        }
-
-        return modified;
-    }
-
-    /**
-     * Оставляет в этом списке только те элементы, которые содержатся в указанной коллекции.
-     * Другими словами, удаляет из этого списка все его элементы, которых нет в указанной коллекции.
-     *
-     * @param collection коллекция, содержащая элементы, которые должны быть сохранены в этом списке
-     * @return true, если этот список изменился в результате вызова
-     * @throws NullPointerException если указанная коллекция null
-     * @throws ClassCastException если типы элементов несовместимы
-     */
-    @Override
-    public boolean retainAll(Collection<?> collection) {
-        Objects.requireNonNull(collection, "Collection cannot be null");
-
-        boolean modified = false;
-        int writeIndex = 0;
-        final Object[] es = array;
-
-        for (int readIndex = 0; readIndex < size; readIndex++) {
-            final Object element = es[readIndex];
-            if (collection.contains(element)) {
-                es[writeIndex++] = element;
-            } else {
-                modified = true;
-            }
-        }
-
-        if (modified) {
-            Arrays.fill(es, writeIndex, size, null);
-            size = writeIndex;
-        }
-
-        return modified;
     }
 
     /**
