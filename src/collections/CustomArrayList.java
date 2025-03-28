@@ -127,15 +127,6 @@ public class CustomArrayList<T> implements CustomList<T>, Serializable {
     }
 
     /**
-     * обнуляет размер списка и создаёт пустой массив дефолтного размера.
-     */
-    @Override
-    public void clear() {
-        size = 0;
-        array = (T[]) new Object[DEFAULT_CAPACITY];
-    }
-
-    /**
      * Добавляет указанный элемент в конец списка.
      *
      * @param item элемент, который нужно добавить в конец списка
@@ -188,6 +179,90 @@ public class CustomArrayList<T> implements CustomList<T>, Serializable {
     }
 
     /**
+     * Возвращает элемент в указанной позиции в этом списке.
+     *
+     * @param index индекс возвращаемого элемента
+     * @return элемент в указанной позиции
+     * @throws IndexOutOfBoundsException если индекс выходит за границы
+     *         (index < 0 || index >= size)
+     */
+    @Override
+    public T get(int index) {
+        Objects.checkIndex(index, size);
+        return array[index];
+    }
+
+    /**
+     * Заменяет элемент в указанной позиции в этом списке на указанный элемент.
+     *
+     * @param index индекс заменяемого элемента
+     * @param element элемент, который будет сохранен в указанной позиции
+     * @return предыдущий элемент в указанной позиции
+     * @throws IndexOutOfBoundsException если индекс выходит за границы диапазона
+     *         (index < 0 || index >= size)
+     */
+    @Override
+    public T set(int index, T element) {
+        Objects.checkIndex(index, size);
+        T oldValue = (T) array[index];
+        array[index] = element;
+        return oldValue;
+    }
+
+    /**
+     * Удаляет первое вхождение указанного элемента из этого списка, если оно присутствует.
+     *
+     * @param element элемент, который нужно удалить из этого списка, если он присутствует
+     * @return true, если этот список содержал указанный элемент
+     */
+    @Override
+    public boolean remove(Object element) {
+        Objects.requireNonNull(element, "Element cannot be null");
+        for (int i = 0; i < size; i++) {
+            if (element.equals(array[i])) {
+                remove(i);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Удаляет элемент по указанному индексу в списке.
+     *
+     * @param index индекс элемента, который нужно удалить
+     * @return элемент, который был удален из списка
+     * @throws IndexOutOfBoundsException если индекс выходит за пределы (index < 0 || index >= size())
+     */
+    @Override
+    public T remove(int index) {
+        Objects.checkIndex(index, size);
+
+        T removedElement = array[index];
+        int shiftIndex = index + 1;
+
+        if(shiftIndex < size) {
+            System.arraycopy(array, shiftIndex, array, index, size - shiftIndex);
+        }
+        array[--size] = null;
+        return removedElement;
+    }
+
+    /**
+     * обнуляет размер списка и создаёт пустой массив дефолтного размера.
+     */
+    @Override
+    public void clear() {
+        size = 0;
+        array = (T[]) new Object[DEFAULT_CAPACITY];
+    }
+
+    //------------------------------------------------------------------------
+    // Далее идут методы, которые не входили в задание, но
+    // необходимые для реализации интерфейса Collection
+    //------------------------------------------------------------------------
+
+    /**
      * Вставляет указанный элемент в начало списка.
      *
      * @param element элемент для добавления
@@ -219,76 +294,6 @@ public class CustomArrayList<T> implements CustomList<T>, Serializable {
     public void addLast(T element) {
         Objects.requireNonNull(element, "Element cannot be null");
         this.add(element);
-    }
-
-    /**
-     * Удаляет элемент по указанному индексу в списке.
-     *
-     * @param index индекс элемента, который нужно удалить
-     * @return элемент, который был удален из списка
-     * @throws IndexOutOfBoundsException если индекс выходит за пределы (index < 0 || index >= size())
-     */
-    @Override
-    public T remove(int index) {
-        Objects.checkIndex(index, size);
-
-        T removedElement = array[index];
-        int shiftIndex = index + 1;
-
-        if(shiftIndex < size) {
-            System.arraycopy(array, shiftIndex, array, index, size - shiftIndex);
-        }
-        array[--size] = null;
-        return removedElement;
-    }
-
-    /**
-     * Удаляет первое вхождение указанного элемента из этого списка, если оно присутствует.
-     *
-     * @param element элемент, который нужно удалить из этого списка, если он присутствует
-     * @return true, если этот список содержал указанный элемент
-     */
-    @Override
-    public boolean remove(Object element) {
-        Objects.requireNonNull(element, "Element cannot be null");
-        for (int i = 0; i < size; i++) {
-            if (element.equals(array[i])) {
-                remove(i);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Возвращает элемент в указанной позиции в этом списке.
-     *
-     * @param index индекс возвращаемого элемента
-     * @return элемент в указанной позиции
-     * @throws IndexOutOfBoundsException если индекс выходит за границы
-     *         (index < 0 || index >= size)
-     */
-    @Override
-    public T get(int index) {
-        Objects.checkIndex(index, size);
-        return array[index];
-    }
-
-    /**
-     * Заменяет элемент в указанной позиции в этом списке на указанный элемент.
-     *
-     * @param index индекс заменяемого элемента
-     * @param element элемент, который будет сохранен в указанной позиции
-     * @return предыдущий элемент в указанной позиции
-     * @throws IndexOutOfBoundsException если индекс выходит за границы диапазона
-     *         (index < 0 || index >= size)
-     */
-    @Override
-    public T set(int index, T element) {
-        Objects.checkIndex(index, size);
-        T oldValue = (T) array[index];
-        array[index] = element;
-        return oldValue;
     }
 
     /**

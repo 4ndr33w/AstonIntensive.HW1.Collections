@@ -28,6 +28,10 @@ import collections.interfaces.CustomList;
 public class CustomLinkedList<T> implements CustomList<T>, Serializable {
 
     /**
+     * Счетчик изменений для fail-fast поведения
+     */
+    private int modCount = 0; // Счетчик изменений для fail-fast поведения
+    /**
      * Текущий размер списка (количество элементов)
      */
     transient int size = 0;
@@ -48,6 +52,14 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
     public CustomLinkedList(Collection<? extends T> c) {
         this();
         addAll(c);
+    }
+
+    public CustomLinkedList(T[] array) {
+        Objects.requireNonNull(array, "Input array cannot be null");
+
+        for (T item : array) {
+            add(item);
+        }
     }
 
     /**
@@ -81,12 +93,14 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
      * <p>Метод создает новый узел с переданным значением и добавляет его в конец списка.
      * Если список пуст, новый узел становится как головой, так и хвостом списка.
      *
-     * @param item добавляемый элемент
+     * @param element добавляемый элемент
      * @return true (согласно спецификации {@link Collection#add})
+     * @throws NullPointerException если {@link @param element} null
      */
     @Override
-    public boolean add(T item) {
-        LinkedListNode<T> node = new LinkedListNode<>(item);
+    public boolean add(T element) {
+        Objects.requireNonNull(element, "Element cannot be null");
+        LinkedListNode<T> node = new LinkedListNode<>(element);
 
         if(head == null) {
             head = node;
@@ -113,13 +127,8 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
      */
     @Override
     public void add(int index, T element) {
-
-        if (index < 0 || index > size) {
-            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
-        }
-        if(element == null) {
-            throw new NullPointerException("Element cannot be null");
-        }
+        Objects.checkIndex(index, size);
+        Objects.requireNonNull(element, "Element cannot be null");
 
         if (index == 0) {
             addFirst(element);
@@ -149,10 +158,7 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
      * @throws IndexOutOfBoundsException в случае, если индекс выходит за пределы допустимого диапазона (index < 0 || index >= size)
      */
     private LinkedListNode<T> getNode(int index) {
-
-        if (index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
-        }
+        Objects.checkIndex(index, size);
 
         if(index == size - 1) {
             return tail;
@@ -164,95 +170,6 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
         }
         return current;
     }
-
-    /**
-     * Вставляет указанный элемент в начало списка.
-     *
-     * @param element элемент для добавления
-     * @throws NullPointerException если указанный элемент равен null
-     */
-    @Override
-    public void addFirst(T element) {
-        if (element == null) {
-            throw new NullPointerException("Element cannot be null");
-        }
-
-        LinkedListNode<T> newNode = new LinkedListNode<>(element);
-        newNode.setNext(head);
-        head = newNode;
-
-        if (tail == null) {
-            tail = head;
-        }
-        size++;
-    }
-
-    /**
-     * Вставляет указанный элемент в конец списка.
-     *
-     * @param element элемент для добавления
-     * @throws NullPointerException если указанный элемент равен null
-     */
-    @Override
-    public void addLast(T element) {
-        if (element == null) {
-            throw new NullPointerException("Element cannot be null");
-        }
-        LinkedListNode<T> newNode = new LinkedListNode<>(element);
-        if (tail == null) {
-            head = tail = newNode;
-        } else {
-            tail.setNext(newNode);
-            tail = newNode;
-        }
-        size++;
-    }
-
-    /**
-     * Удаляет первое вхождение указанного элемента из списка, если оно присутствует.
-     * Если список не содержит элемент, он остается без изменений.
-     *
-     * @param item элемент, который должен быть удален из списка, если присутствует
-     * @return true, если список содержал указанный элемент
-     * @throws NullPointerException если переданный в качестве параметра элемент равен null
-     */
-    @Override
-    public boolean remove(Object item) {
-        if (item == null) {
-            throw new NullPointerException("Element cannot be null");
-        }
-        LinkedListNode<T> current = head;
-        LinkedListNode<T> previous = null;
-
-        while (current != null) {
-
-            if (item.equals(current.getNode())) {
-
-                if (previous != null) {
-
-                    previous.setNext(current.getNext());
-
-                    if(current.getNext() == null){
-                        tail = previous;
-                    }
-                }
-                else {
-                    head = head.getNext();
-
-                    if(head == null){
-                        tail = null;
-                    }
-                }
-                size--;
-                return true;
-            }
-            previous = current;
-            current = current.getNext();
-        }
-        return false;
-    }
-
-
 
     /**
      * Возвращает элемент, который находится в указанной позиции в списке.
@@ -279,13 +196,8 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
      */
     @Override
     public T set(int index, T element) {
-        if (index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
-        }
-
-        if (element == null) {
-            throw new NullPointerException("Element cannot be null");
-        }
+        Objects.checkIndex(index, size);
+        Objects.requireNonNull(element, "Element cannot be null");
 
         LinkedListNode<T> current = getNode(index);
         T oldValue = current.getNode();
@@ -296,40 +208,133 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
     }
 
     /**
+     * Удаляет первое вхождение указанного элемента из списка, если оно присутствует.
+     * Если список не содержит элемент, он остается без изменений.
+     *
+     * @param element элемент, который должен быть удален из списка, если присутствует
+     * @return true, если список содержал указанный элемент
+     * @throws NullPointerException если переданный в качестве параметра элемент равен null
+     */
+    @Override
+    public boolean remove(Object element) {
+        Objects.requireNonNull(element, "Element cannot be null");
+
+        LinkedListNode<T> current = head;
+        LinkedListNode<T> previous = null;
+
+        while (current != null) {
+
+            if (element.equals(current.getNode())) {
+
+                if (previous != null) {
+
+                    previous.setNext(current.getNext());
+
+                    if(current.getNext() == null){
+                        tail = previous;
+                    }
+                }
+                else {
+                    head = head.getNext();
+
+                    if(head == null){
+                        tail = null;
+                    }
+                }
+                size--;
+                return true;
+            }
+            previous = current;
+            current = current.getNext();
+        }
+        return false;
+    }
+
+    /**
      * Удаляет элемент, находящийся на указанной позиции в списке.
      * Сдвигает все последующие элементы влево (уменьшает их индексы на единицу).
      * Возвращает элемент, который был удален из списка.
      *
-     * @param index индекс элемента, который должен быть удален
-     * @return элемент, который находился на указанной позиции
+     * @param index индекс удаляемого элемента (0 ≤ index < size)
+     * @return удаленный элемент
      * @throws IndexOutOfBoundsException если индекс выходит за пределы допустимого диапазона (index < 0 || index >= size)
      */
     @Override
     public T remove(int index) {
-
-        if (index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
-        }
+        Objects.checkIndex(index, size);
 
         if (index == 0) {
             return removeFirst();
         }
-
         if (index == size - 1) {
             return removeLast();
         }
 
-        LinkedListNode<T> previous = getNode(index - 1);
-        LinkedListNode<T> current = previous.getNext();
+        LinkedListNode<T> prev = getNode(index - 1);
+        LinkedListNode<T> toRemove = prev.getNext();
 
-        previous.setNext(current.getNext());
-
+        prev.setNext(toRemove.getNext());
         size--;
-        T removedData = current.getNode();
-        current.setNode(null);
-        current.setNext(null);
 
-        return removedData;
+        return toRemove.getNode();
+    }
+
+    /**
+     * обнуляет размер списка, головной и хвостовой элементы.
+     */
+    @Override
+    public void clear() {
+
+        size = 0;
+        head = null;
+        tail = null;
+    }
+
+
+    //------------------------------------------------------------------------
+    // Далее идут методы, которые не входили в задание, но
+    // необходимые для реализации интерфейса Collection
+    //------------------------------------------------------------------------
+
+
+    /**
+     * Вставляет указанный элемент в начало списка.
+     *
+     * @param element элемент для добавления
+     * @throws NullPointerException если указанный элемент равен null
+     */
+    @Override
+    public void addFirst(T element) {
+        Objects.requireNonNull(element, "Element cannot be null");
+
+        LinkedListNode<T> newNode = new LinkedListNode<>(element);
+        newNode.setNext(head);
+        head = newNode;
+
+        if (tail == null) {
+            tail = head;
+        }
+        size++;
+    }
+
+    /**
+     * Вставляет указанный элемент в конец списка.
+     *
+     * @param element элемент для добавления
+     * @throws NullPointerException если указанный элемент равен null
+     */
+    @Override
+    public void addLast(T element) {
+        Objects.requireNonNull(element, "Element cannot be null");
+
+        LinkedListNode<T> newNode = new LinkedListNode<>(element);
+        if (tail == null) {
+            head = tail = newNode;
+        } else {
+            tail.setNext(newNode);
+            tail = newNode;
+        }
+        size++;
     }
 
     /**
@@ -386,25 +391,23 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
      * Возвращает индекс первого вхождения указанного элемента списке,
      * или -1, если элемент не содержится в списке.
      * Более формально, возвращает наименьший индекс {@code i} такой, что
-     * {@code Objects.equals(o, get(i))},
+     * {@code Objects.equals(element, get(i))},
      * или -1, если такого индекса не существует.
      *
-     * @param o элемент для поиска
+     * @param element элемент для поиска
      * @return индекс первого вхождения элемента,
      *         или -1, если элемент не найден
      * @throws NullPointerException если переданный в качестве параметра элемент равен null
      */
     @Override
-    public int indexOf(Object o) {
-        if (o == null) {
-            throw new NullPointerException("Element cannot be null");
-        }
+    public int indexOf(Object element) {
+        Objects.requireNonNull(element, "Element cannot be null");
 
         LinkedListNode<T> current = head;
         int index = 0;
 
         while (current != null) {
-            if (o.equals(current.getNode())) {
+            if (element.equals(current.getNode())) {
                 return index;
             }
             current = current.getNext();
@@ -417,21 +420,20 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
     /**
      * Возвращает true, если список содержит указанный элемент.
      * Более формально, возвращает true тогда и только тогда, когда список содержит
-     * хотя бы один элемент e такой, что (o==null ? e==null : o.equals(e)).
+     * хотя бы один элемент e такой, что (element==null ? e==null : element.equals(e)).
      *
-     * @param o элемент, наличие которого в списке нужно проверить
+     * @param element элемент, наличие которого в списке нужно проверить
      * @return true, если список содержит указанный элемент
      * @throws NullPointerException если переданный в качестве параметра элемент равен null
      */
     @Override
-    public boolean contains(Object o) {
-        if (o == null) {
-            throw new NullPointerException("Element cannot be null");
-        }
+    public boolean contains(Object element) {
+        Objects.requireNonNull(element, "Element cannot be null");
+
         LinkedListNode<T> current = head;
 
         while (current != null) {
-            if (o.equals(current.getNode())) {
+            if (element.equals(current.getNode())) {
                 return true;
             }
             current = current.getNext();
@@ -439,21 +441,78 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
         return false;
     }
 
-    /**
-     * обнуляет размер списка, головной и хвостовой элементы.
-     */
     @Override
-    public void clear() {
-
-        size = 0;
-        head = null;
-        tail = null;
+    public Iterator<T> iterator() {
+        return new LinkedListIterator();
     }
 
+    private class LinkedListIterator implements Iterator<T> {
+        private LinkedListNode<T> current = head;
+        private LinkedListNode<T> lastReturned = null;
+        private int expectedModCount = modCount;
+        private boolean canRemove = false;
+
+        @Override
+        public boolean hasNext() {
+            return current != null;
+        }
+
+        @Override
+        public T next() {
+            checkForComodification();
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+
+            lastReturned = current;
+            current = current.getNext();
+            canRemove = true;
+            return lastReturned.getNode();
+        }
+
+        @Override
+        public void remove() {
+            checkForComodification();
+            if (!canRemove) {
+                throw new IllegalStateException();
+            }
+
+            LinkedListNode<T> prev = lastReturned.getPrev();
+            LinkedListNode<T> next = lastReturned.getNext();
+
+            if (prev == null) {
+                head = next;
+            } else {
+                prev.setNext(next);
+            }
+
+            if (next == null) {
+                tail = prev;
+            } else {
+                next.setPrev(prev);
+            }
+
+            size--;
+            modCount++;
+            expectedModCount = modCount;
+            canRemove = false;
+        }
+
+        private void checkForComodification() {
+            if (modCount != expectedModCount) {
+                throw new java.util.ConcurrentModificationException();
+            }
+        }
+    }
+
+    //------------------------------------------------------------------------
     // следующие методы необходимы для реализации интерфейса Collection,
     // но задание не предполагает их реализации
     // в CustomArrayList я их реализовал
     // Реализацию методов в этом классе сделаю по необходимости позже
+    //------------------------------------------------------------------------
+
+
     @Override
     public boolean containsAll(Collection<?> c) {
         return false;
@@ -474,10 +533,7 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
         return false;
     }
 
-    @Override
-    public Iterator<T> iterator() {
-        return null;
-    }
+
 
     @Override
     public Object[] toArray() {
