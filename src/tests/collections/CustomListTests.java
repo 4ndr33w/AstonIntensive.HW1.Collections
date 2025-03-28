@@ -231,20 +231,20 @@ public class CustomListTests {
     @ParameterizedTest
     @MethodSource("customCollectionsImplementations")
     @DisplayName("check remove method ( remove (int index ) when 0 < index < list.size(). Expected successful result")
-    public void remove_ByIndex_TestReturnsTrue(CustomList<String> testList) {
-
+    public void remove_ByMiddleIndex_ShouldRemoveElement(CustomList<String> testList) {
         assertEquals(TestUtils.SIZE_OF_LIST, testList.size());
         assertEquals(TestUtils.SIXTH_ELEMENT, testList.get(5));
         testList.remove(5);
         assertEquals(TestUtils.SEVENTH_ELEMENT, testList.get(5));
         assertEquals(TestUtils.SIZE_OF_LIST - 1, testList.size());
+        String removed = testList.remove(5);
+        assertEquals(TestUtils.SIXTH_ELEMENT, removed);
     }
 
     @ParameterizedTest
     @MethodSource("customCollectionsImplementations")
     @DisplayName("check remove method ( remove (int index ) when index < 0. Expected IndexOutOfBoundsException")
     public void remove_ByIndex_Test_WhenIndexNegative_ReturnsIndexOutOfBoundException(CustomList<String> testList) {
-
         assertThrows(IndexOutOfBoundsException.class, () -> testList.remove(-1));
     }
 
@@ -252,7 +252,6 @@ public class CustomListTests {
     @MethodSource("customCollectionsImplementations")
     @DisplayName("check remove method ( remove (int index ) when index < 0. Expected IndexOutOfBoundsException")
     public void remove_ByIndex_Test_WhenIndexOverreachCollectionSize_ReturnsIndexOutOfBoundException(CustomList<String> testList) {
-
         assertThrows(IndexOutOfBoundsException.class, () -> testList.remove(TestUtils.SIZE_OF_LIST + 1));
     }
 

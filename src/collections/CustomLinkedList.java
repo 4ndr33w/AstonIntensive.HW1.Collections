@@ -434,6 +434,10 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
         tail = null;
     }
 
+    // следующие методы необходимы для реализации интерфейса Collection,
+    // но задание не предполагает их реализации
+    // в CustomArrayList я их реализовал
+    // Реализацию методов в этом классе сделаю по необходимости позже
     @Override
     public boolean containsAll(Collection<?> c) {
         return false;
