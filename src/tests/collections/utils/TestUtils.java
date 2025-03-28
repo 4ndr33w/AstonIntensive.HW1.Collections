@@ -2,9 +2,29 @@ package tests.collections.utils;
 
 import collections.CustomArrayList;
 import collections.CustomLinkedList;
-import collections.LinkedListNode;
 
+/**
+ * Утилитный класс для создания тестовых данных и настройки тестовой среды.
+ *
+ * Этот класс содержит набор статических методов и констант, которые используются
+ * для инициализации тестовых данных при проведении unit-тестов. Он обеспечивает
+ * создание заполненных коллекций для проверки функциональности.
+ *
+ * Основные функции:
+ * - Определение констант для тестирования
+ * - Создание тестовых экземпляров коллекций
+ * - Заполнение коллекций тестовыми данными
+ * - Предоставление готовых наборов данных для тестов
+ *
+ * @see CustomLinkedList
+ * @see CustomArrayList
+ */
 public class TestUtils {
+
+    public static final String PREVIOUS_NODE = "previous node";
+    public static final String CURRENT_NODE = "current node";
+    public static final String NEXT_NODE = "next node";
+    public static final String TEST_NODE = "test node";
 
     public static final String FIRST_ELEMENT = "One";
     public static final String SECOND_ELEMENT = "Two";
@@ -18,38 +38,36 @@ public class TestUtils {
     public static final String TENTH_ELEMENT = "Ten";
     public static final String NEW_ELEMENT = "new element";
     public static final String ELEMENT_NOT_IN_LIST = "element not in list";
+
     public static final int SIZE_OF_LIST = 10;
-    public static LinkedListNode<String> testLinkedListNodePrevious = new LinkedListNode<String>("PreviousReference");
-    public static LinkedListNode<String> testLinkedListNode = new LinkedListNode<String>("CurrentReference");
-    public static LinkedListNode<String> testLinkedListNodeNext = new LinkedListNode<String>("NextReference");
 
     public static CustomLinkedList<String> fillTestLinkedList(){
-        CustomLinkedList<String> testLinkedList1 = new CustomLinkedList<String>();
-        testLinkedList1.add(FIRST_ELEMENT);
-        testLinkedList1.add(SECOND_ELEMENT);
-        testLinkedList1.add(THIRD_ELEMENT);
-        testLinkedList1.add(FOURTH_ELEMENT);
-        testLinkedList1.add(FIFTH_ELEMENT);
-        testLinkedList1.add(SIXTH_ELEMENT);
-        testLinkedList1.add(SEVENTH_ELEMENT);
-        testLinkedList1.add(EIGHTH_ELEMENT);
-        testLinkedList1.add(NINTH_ELEMENT);
-        testLinkedList1.add(TENTH_ELEMENT);
-        return testLinkedList1;
+        CustomLinkedList<String> testLinkedList = new CustomLinkedList<String>();
+        testLinkedList.add(FIRST_ELEMENT);
+        testLinkedList.add(SECOND_ELEMENT);
+        testLinkedList.add(THIRD_ELEMENT);
+        testLinkedList.add(FOURTH_ELEMENT);
+        testLinkedList.add(FIFTH_ELEMENT);
+        testLinkedList.add(SIXTH_ELEMENT);
+        testLinkedList.add(SEVENTH_ELEMENT);
+        testLinkedList.add(EIGHTH_ELEMENT);
+        testLinkedList.add(NINTH_ELEMENT);
+        testLinkedList.add(TENTH_ELEMENT);
+        return testLinkedList;
     }
 
     public static CustomArrayList<String> fillTestArrayList () {
-        CustomArrayList<String> testList = new CustomArrayList<>();
-        testList.add(FIRST_ELEMENT);
-        testList.add(SECOND_ELEMENT);
-        testList.add(THIRD_ELEMENT);
-        testList.add(FOURTH_ELEMENT);
-        testList.add(FIFTH_ELEMENT);
-        testList.add(SIXTH_ELEMENT);
-        testList.add(SEVENTH_ELEMENT);
-        testList.add(EIGHTH_ELEMENT);
-        testList.add(NINTH_ELEMENT);
-        testList.add(TENTH_ELEMENT);
-        return testList;
+        CustomArrayList<String> testArrayList = new CustomArrayList<>();
+        testArrayList.add(FIRST_ELEMENT);
+        testArrayList.add(SECOND_ELEMENT);
+        testArrayList.add(THIRD_ELEMENT);
+        testArrayList.add(FOURTH_ELEMENT);
+        testArrayList.add(FIFTH_ELEMENT);
+        testArrayList.add(SIXTH_ELEMENT);
+        testArrayList.add(SEVENTH_ELEMENT);
+        testArrayList.add(EIGHTH_ELEMENT);
+        testArrayList.add(NINTH_ELEMENT);
+        testArrayList.add(TENTH_ELEMENT);
+        return testArrayList;
     }
 }

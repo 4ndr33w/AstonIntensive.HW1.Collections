@@ -3,6 +3,18 @@ package collections.interfaces;
 import java.util.Collection;
 import java.util.NoSuchElementException;
 
+
+/**
+ * Интерфейс CustomList представляет собой упорядоченную коллекцию элементов,
+ * которая позволяет хранить дубликаты и обеспечивает доступ к элементам по индексу.
+ * <p>
+ * Этот интерфейс расширяет Collection и добавляет функциональность, специфичную
+ * для упорядоченных коллекций, такую как управление элементами по индексу и
+ * модификация списка с сохранением порядка.
+ * </p>
+ * @param <T> тип элементов, которые может содержать список
+ * @see Collection
+ */
 public interface CustomList<T> extends Collection<T> {
 
     /**

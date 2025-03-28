@@ -6,9 +6,24 @@ import java.util.*;
 import collections.interfaces.CustomList;
 
 /**
- * Класс CustomLinkedList представляет собой кастомную реализацию связанного списка.
- *
- * @param <T> тип элементов, которые будут храниться в списке
+ * Реализация упорядоченной коллекции на основе двусвязного списка.
+ * <p>
+ * CustomLinkedList представляет собой структуру данных, где элементы хранятся
+ * в виде узлов, связанных ссылками друг с другом. Каждый узел содержит ссылку
+ * на предыдущий и следующий узел, что обеспечивает эффективную вставку и удаление
+ * элементов в любой позиции списка.
+ * </p>
+ * <p>
+ * Основные характеристики:
+ * - Позволяет хранить дубликаты элементов
+ * - Обеспечивает O(1) сложность для вставки и удаления в начало и конец
+ * - Имеет O(n) сложность для произвольного доступа
+ * - Не требует предварительного выделения памяти
+ * - Эффективно использует память при частых вставках/удалениях
+ * </p>
+ * @param <T> тип хранимых элементов
+ * @see CustomList
+ * @see Collection
  */
 public class CustomLinkedList<T> implements CustomList<T>, Serializable {
 
@@ -326,16 +341,17 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
     @Override
     public T removeFirst() {
         if (head == null) {
-            throw new NoSuchElementException();
+            throw new NoSuchElementException("Cannot remove from empty list");
         }
 
         T removedData = head.getNode();
         head = head.getNext();
 
-        if (head == null) {
+        if (head != null) {
+            head.setPrev(null);
+        } else {
             tail = null;
         }
-
         size--;
         return removedData;
     }
@@ -349,7 +365,7 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
     @Override
     public T removeLast() {
         if (tail == null) {
-            throw new NoSuchElementException();
+            throw new NoSuchElementException("Cannot remove from empty list");
         }
 
         if (size == 1) {

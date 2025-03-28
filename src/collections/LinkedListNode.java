@@ -1,15 +1,26 @@
 package collections;
 
 
+import java.util.Objects;
+
 /**
  * Класс, представляющий узел двусвязного списка.
+ * <p>
+ * LinkedListNode является базовым строительным блоком для двусвязных списков,
+ * содержащий данные и ссылки на предыдущий и следующий узлы. Этот класс
+ * используется для создания и управления структурами данных на основе
+ * двусвязных списков.
+ * </p>
+ * <p>
+ * Основные характеристики:
+ * - Содержит данные произвольного типа
+ * - Имеет ссылки на предыдущий и следующий узлы
+ * - Является частным компонентом структуры данных двусвязного списка
+ * - Обеспечивает возможность эффективной вставки и удаления элементов
+ * </p>
  *
- * <p>Каждый узел содержит:
- * - значение типа T
- * - ссылку на предыдущий узел
- * - ссылку на следующий узел
- *
- * @param <T> тип данных, хранимых в узле
+ * @param <T> тип хранимых данных в узле
+ * @see CustomLinkedList
  */
 public class LinkedListNode<T> {
 
@@ -90,5 +101,29 @@ public class LinkedListNode<T> {
      */
     public void setNode(T node){
         this.node = node;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        LinkedListNode<?> that = (LinkedListNode<?>) o;
+        return Objects.equals(node, that.node) &&
+                Objects.equals(next, that.next) &&
+                Objects.equals(prev, that.prev);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(node, next, prev);
+    }
+
+    @Override
+    public String toString() {
+        return "Node{" +
+                "value=" + node +
+                ", next=" + (next != null ? "hasNext" : "null") +
+                ", prev=" + (prev != null ? "hasPrev" : "null") +
+                '}';
     }
 }

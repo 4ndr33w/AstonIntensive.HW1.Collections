@@ -6,16 +6,27 @@ import java.util.*;
 import collections.interfaces.CustomList;
 
 /**
- * Класс CustomArrayList представляет собой реализацию интерфейса List на основе массива.
- *
- * @param <T> тип элементов, которые будут храниться в коллекции
+ * Реализация упорядоченной коллекции на основе динамического массива.
+ * <p>
+ * CustomArrayList представляет собой структуру данных, которая хранит элементы
+ * в порядке их добавления и обеспечивает быстрый доступ к элементам по индексу.
+ * </p>
+ * <p>
+ * Основные характеристики:
+ * - Позволяет хранить дубликаты элементов
+ * - Обеспечивает произвольный доступ O(1) по индексу
+ * - Автоматически расширяет внутренний массив при необходимости
+ * </p>
+ * @param <T> тип хранимых элементов
+ * @see CustomList
+ * @see Collection
  */
 public class CustomArrayList<T> implements CustomList<T>, Serializable {
 
     /**
      * Начальная емкость массива по умолчанию
      */
-    private static final int DEFAULT_CAPACITY = 5;
+    transient static final int DEFAULT_CAPACITY = 5;
 
     /**
      * Массив для хранения элементов списка элементов типа Т
@@ -164,23 +175,16 @@ public class CustomArrayList<T> implements CustomList<T>, Serializable {
      */
     @Override
     public void add(int index, T element) {
+        Objects.checkIndex(index, size + 1);
+        Objects.requireNonNull(element, "Element cannot be null");
 
-        if (index >= size || index < 0) {
-            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
-        }
-        if(element == null) {
-            throw new NullPointerException("Element cannot be null");
-        }
-
-        if (array.length <= size + 1) {
+        if (size == array.length) {
             growArray();
         }
 
-        for (int i = size; i > index; i--) {
-            array[i] = array[i - 1];
-        }
-        size++;
+        System.arraycopy(array, index, array, index + 1, size - index);
         array[index] = element;
+        size++;
     }
 
     /**
@@ -191,25 +195,18 @@ public class CustomArrayList<T> implements CustomList<T>, Serializable {
      */
     @Override
     public void addFirst(T element) {
-        if (element == null) {
-            throw new NullPointerException("Element cannot be null");
+        Objects.requireNonNull(element, "Element cannot be null");
+
+        if (size == array.length) {
+            growArray();
         }
 
-        if(this.size == 0) {
-            this.add(element);
+        if (size > 0) {
+            System.arraycopy(array, 0, array, 1, size);
         }
-        if(this.size > 0) {
 
-            if (array.length <= size + 1) {
-                growArray();
-            }
-
-            for (int i = size; i >  0; i--) {
-                array[i] = array[i - 1];
-            }
-            size++;
-            array[0] = element;
-        }
+        array[0] = element;
+        size++;
     }
 
     /**
@@ -220,9 +217,7 @@ public class CustomArrayList<T> implements CustomList<T>, Serializable {
      */
     @Override
     public void addLast(T element) {
-        if(element == null) {
-            throw new NullPointerException("Element cannot be null");
-        }
+        Objects.requireNonNull(element, "Element cannot be null");
         this.add(element);
     }
 
@@ -235,29 +230,29 @@ public class CustomArrayList<T> implements CustomList<T>, Serializable {
      */
     @Override
     public T remove(int index) {
-        if(index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException();
-        }
+        Objects.checkIndex(index, size);
+
+        T removedElement = array[index];
         int shiftIndex = index + 1;
 
         if(shiftIndex < size) {
             System.arraycopy(array, shiftIndex, array, index, size - shiftIndex);
         }
         array[--size] = null;
-        return array[index];
+        return removedElement;
     }
 
     /**
      * Удаляет первое вхождение указанного элемента из этого списка, если оно присутствует.
      *
-     * @param item элемент, который нужно удалить из этого списка, если он присутствует
+     * @param element элемент, который нужно удалить из этого списка, если он присутствует
      * @return true, если этот список содержал указанный элемент
      */
     @Override
-    public boolean remove(Object item) {
-
+    public boolean remove(Object element) {
+        Objects.requireNonNull(element, "Element cannot be null");
         for (int i = 0; i < size; i++) {
-            if (item.equals(array[i])) {
+            if (element.equals(array[i])) {
                 remove(i);
                 return true;
             }
@@ -275,10 +270,7 @@ public class CustomArrayList<T> implements CustomList<T>, Serializable {
      */
     @Override
     public T get(int index) {
-
-        if(index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
-        }
+        Objects.checkIndex(index, size);
         return array[index];
     }
 
@@ -293,10 +285,7 @@ public class CustomArrayList<T> implements CustomList<T>, Serializable {
      */
     @Override
     public T set(int index, T element) {
-        if (index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
-        }
-
+        Objects.checkIndex(index, size);
         T oldValue = (T) array[index];
         array[index] = element;
         return oldValue;
@@ -341,18 +330,16 @@ public class CustomArrayList<T> implements CustomList<T>, Serializable {
      * Возвращает индекс первой вхождения указанного элемента в этом списке,
      * или -1, если этот список не содержит элемента.
      *
-     * @param item элемент для поиска
+     * @param element элемент для поиска
      * @return i - индекс первого вхождения указанного элемента,
      *         или -1, если этот список не содержит элемента
      */
     @Override
-    public int indexOf(Object item) {
-        if (item == null) {
-            throw new NullPointerException("Item cannot be null");
-        }
+    public int indexOf(Object element) {
+        Objects.requireNonNull(element, "Element cannot be null");
 
         for (int i = 0; i < size; i++) {
-            if (array[i].equals(item)) {
+            if (array[i].equals(element)) {
                 return i;
             }
         }
@@ -364,17 +351,15 @@ public class CustomArrayList<T> implements CustomList<T>, Serializable {
      * Более формально, возвращает true тогда и только тогда, когда этот список содержит
      * хотя бы один элемент e такой, что Objects.equals(item, e).
      *
-     * @param item элемент, наличие которого в этом списке нужно проверить
+     * @param element элемент, наличие которого в этом списке нужно проверить
      * @return true, если этот список содержит указанный элемент
      * @throws NullPointerException если указанный элемент null
      *         и этот список не допускает null элементы (опционально)
      */
     @Override
-    public boolean contains(Object item) {
-        if (item == null) {
-            throw new NullPointerException("Item cannot be null");
-        }
-        return indexOf(item) != -1;
+    public boolean contains(Object element) {
+        Objects.requireNonNull(element, "Element cannot be null");
+        return indexOf(element) != -1;
     }
 
     /**
@@ -389,9 +374,7 @@ public class CustomArrayList<T> implements CustomList<T>, Serializable {
      */
     @Override
     public <T1> T1[] toArray(T1[] incArray) {
-        if (incArray == null) {
-            throw new NullPointerException("Target array must not be null");
-        }
+        Objects.requireNonNull(incArray, "Array cannot be null");
 
         if (incArray.length < size) {
             return (T1[]) Arrays.copyOf(array, size, incArray.getClass());
@@ -415,9 +398,7 @@ public class CustomArrayList<T> implements CustomList<T>, Serializable {
      */
     @Override
     public boolean containsAll(Collection<?> collection) {
-        if (collection == null) {
-            throw new NullPointerException("Collection must not be null");
-        }
+        Objects.requireNonNull(collection, "collection cannot be null");
 
         if (collection.isEmpty()) {
             return true;
@@ -440,9 +421,7 @@ public class CustomArrayList<T> implements CustomList<T>, Serializable {
      */
     @Override
     public boolean addAll(Collection<? extends T> collection) {
-        if (collection == null) {
-            throw new NullPointerException("Collection must not be null");
-        }
+        Objects.requireNonNull(collection, "collection cannot be null");
 
         if (collection.isEmpty()) {
             return false;
@@ -468,22 +447,20 @@ public class CustomArrayList<T> implements CustomList<T>, Serializable {
     /**
      * Удаляет из этого списка все его элементы, которые содержатся в указанной коллекции.
      *
-     * @param c коллекция, содержащая элементы, которые должны быть удалены из этого списка
+     * @param collection коллекция, содержащая элементы, которые должны быть удалены из этого списка
      * @return true, если этот список изменился в результате вызова
      * @throws NullPointerException если указанная коллекция null
      */
     @Override
-    public boolean removeAll(Collection<?> c) {
-        if (c == null) {
-            throw new NullPointerException("Collection must not be null");
-        }
+    public boolean removeAll(Collection<?> collection) {
+        Objects.requireNonNull(collection, "collection cannot be null");
 
         boolean modified = false;
         final Object[] tempArray = array;
         int i = 0;
 
         for (; i < size; i++) {
-            if (c.contains(tempArray[i])) {
+            if (collection.contains(tempArray[i])) {
                 modified = true;
                 break;
             }
@@ -493,7 +470,7 @@ public class CustomArrayList<T> implements CustomList<T>, Serializable {
             int newSize = i;
 
             for (i++; i < size; i++) {
-                if (!c.contains(tempArray[i])) {
+                if (!collection.contains(tempArray[i])) {
                     tempArray[newSize++] = tempArray[i];
                 }
             }
@@ -512,37 +489,31 @@ public class CustomArrayList<T> implements CustomList<T>, Serializable {
      * Оставляет в этом списке только те элементы, которые содержатся в указанной коллекции.
      * Другими словами, удаляет из этого списка все его элементы, которых нет в указанной коллекции.
      *
-     * @param c коллекция, содержащая элементы, которые должны быть сохранены в этом списке
+     * @param collection коллекция, содержащая элементы, которые должны быть сохранены в этом списке
      * @return true, если этот список изменился в результате вызова
      * @throws NullPointerException если указанная коллекция null
      * @throws ClassCastException если типы элементов несовместимы
-     * @throws NullPointerException если этот список содержит null, а коллекция не допускает null
      */
     @Override
-    public boolean retainAll(Collection<?> c) {
-        if (c == null) {
-            throw new NullPointerException("Collection must not be null");
-        }
+    public boolean retainAll(Collection<?> collection) {
+        Objects.requireNonNull(collection, "Collection cannot be null");
 
         boolean modified = false;
-        int newSize = 0;
+        int writeIndex = 0;
+        final Object[] es = array;
 
-        for (int i = 0; i < size; i++) {
-            if (c.contains(array[i])) {
-                if (newSize != i) {
-                    array[newSize] = array[i];
-                }
-                newSize++;
+        for (int readIndex = 0; readIndex < size; readIndex++) {
+            final Object element = es[readIndex];
+            if (collection.contains(element)) {
+                es[writeIndex++] = element;
             } else {
                 modified = true;
             }
         }
 
         if (modified) {
-            for (int i = newSize; i < size; i++) {
-                array[i] = null;
-            }
-            size = newSize;
+            Arrays.fill(es, writeIndex, size, null);
+            size = writeIndex;
         }
 
         return modified;
@@ -562,9 +533,13 @@ public class CustomArrayList<T> implements CustomList<T>, Serializable {
      */
     @Override
     public T removeFirst() {
-        var removedElement = array[0];
-        this.remove(0);
-        return (T) removedElement;
+        if (size == 0) {
+            throw new NoSuchElementException("Cannot remove from empty list");
+        }
+        T removedElement = array[0];
+        System.arraycopy(array, 1, array, 0, size - 1);
+        array[--size] = null; // Помогаем GC
+        return removedElement;
     }
 
     /**
@@ -581,9 +556,11 @@ public class CustomArrayList<T> implements CustomList<T>, Serializable {
      */
     @Override
     public T removeLast() {
-        var removedElement = array[size - 1];
-        this.remove(size - 1);
-        return (T) removedElement;
+        if (isEmpty()) {
+            throw new NoSuchElementException("List is empty");
+        }
+
+        return remove(size - 1);
     }
 
 }

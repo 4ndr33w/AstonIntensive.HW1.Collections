@@ -1,23 +1,42 @@
 package tests.collections;
 
-import collections.CustomArrayList;
-import collections.CustomLinkedList;
-import collections.interfaces.CustomList;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.provider.MethodSource;
-import tests.collections.utils.TestUtils;
+import org.junit.Test;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotEquals;
 
+import tests.collections.utils.TestUtils;
+import collections.CustomArrayList;
+import collections.CustomLinkedList;
+import collections.interfaces.CustomList;
+
+/**
+ * Класс для тестирования реализации интерфейса CustomList.
+ *
+ * Этот класс содержит набор тестовых методов, которые проверяют корректность
+ * работы различных методов интерфейса CustomList на примерах реализации
+ * CustomLinkedList и CustomArrayList.
+ *
+ * Основные функции:
+ * - Инициализация тестовых данных
+ * - Проверка базовых операций с коллекциями
+ * - Тестирование различных сценариев использования
+ *
+ * @see CustomList
+ * @see CustomLinkedList
+ * @see CustomArrayList
+ */
 public class CustomListTests {
-
 
     private static CustomLinkedList<String> testLinkedList = new CustomLinkedList<>();
     private static CustomArrayList<String> testArrayList = new CustomArrayList<>();
@@ -50,9 +69,15 @@ public class CustomListTests {
     }
 
     @Test
-    @DisplayName("check isEmpty method. Returns true")
-    public void isEmptyTestReturnsTrue() {
+    @DisplayName("check CustomLinkedList.isEmpty() method. Returns true")
+    public void isEmpty_emptyCustomLinkedList_ReturnsTrue() {
         assertTrue(new CustomLinkedList<String>().isEmpty());
+    }
+
+    @Test
+    @DisplayName("check CustomArrayList.isEmpty() method. Returns true")
+    public void isEmpty_emptyCustomArrayList_ReturnsTrue() {
+        assertTrue(new CustomArrayList<String>().isEmpty());
     }
 
     @ParameterizedTest
@@ -177,10 +202,17 @@ public class CustomListTests {
     }
 
     @Test
-    @DisplayName("check removeFirst method. Expected NoSuchElementException")
-    public void removeFirstTestReturnsNoSuchElementException() {
+    @DisplayName("check CustomLinkedList.removeFirst() method. Expected NoSuchElementException")
+    public void removeFirst_emptyCustomLinkedList_ReturnsNoSuchElementException() {
         CustomLinkedList<String> testListEmpty = new CustomLinkedList<>();
         assertThrows(NoSuchElementException.class, testListEmpty::removeFirst);
+    }
+
+    @Test
+    @DisplayName("check CustomArrayList.removeFirst() method. Expected NoSuchElementException")
+    public void removeFirst_emptyCustomArrayList_ReturnsNoSuchElementException() {
+        CustomArrayList<String> arrayListEmpty = new CustomArrayList<>();
+        assertThrows(NoSuchElementException.class, arrayListEmpty::removeFirst);
     }
 
     @ParameterizedTest
@@ -196,10 +228,17 @@ public class CustomListTests {
     }
 
     @Test
-    @DisplayName("check removeLast method. Expected NoSuchElementException")
-    public void removeLastTestReturnsNoSuchElementException() {
-        CustomLinkedList<String> testListEmpty = new CustomLinkedList<>();
-        assertThrows(NoSuchElementException.class, testListEmpty::removeLast);
+    @DisplayName("check CustomArrayList.removeLast() method. Expected NoSuchElementException")
+    public void removeLast_emptyCustomLinkedList_ReturnsNoSuchElementException() {
+        CustomLinkedList<String> emptyList = new CustomLinkedList<>();
+        assertThrows(NoSuchElementException.class, emptyList::removeLast);
+    }
+
+    @Test
+    @DisplayName("check CustomArrayList.removeLast() method. Expected NoSuchElementException")
+    public void removeLast_emptyCustomArrayList_ReturnsNoSuchElementException() {
+        CustomArrayList<String> arrayListEmpty = new CustomArrayList<>();
+        assertThrows(NoSuchElementException.class, arrayListEmpty::removeLast);
     }
 
     @ParameterizedTest
@@ -234,11 +273,11 @@ public class CustomListTests {
     public void remove_ByMiddleIndex_ShouldRemoveElement(CustomList<String> testList) {
         assertEquals(TestUtils.SIZE_OF_LIST, testList.size());
         assertEquals(TestUtils.SIXTH_ELEMENT, testList.get(5));
-        testList.remove(5);
+        String removed = testList.remove(5);
         assertEquals(TestUtils.SEVENTH_ELEMENT, testList.get(5));
         assertEquals(TestUtils.SIZE_OF_LIST - 1, testList.size());
-        String removed = testList.remove(5);
         assertEquals(TestUtils.SIXTH_ELEMENT, removed);
+
     }
 
     @ParameterizedTest
