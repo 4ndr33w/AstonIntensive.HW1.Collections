@@ -1,5 +1,6 @@
 package tests.collections.utils;
 
+import collections.CustomArrayList;
 import collections.CustomLinkedList;
 import collections.LinkedListNode;
 
@@ -22,11 +23,7 @@ public class TestUtils {
     public static LinkedListNode<String> testLinkedListNode = new LinkedListNode<String>("CurrentReference");
     public static LinkedListNode<String> testLinkedListNodeNext = new LinkedListNode<String>("NextReference");
 
-    public static CustomLinkedList<String> testLinkedList = new CustomLinkedList<String>();
-
-
     public static CustomLinkedList<String> fillTestLinkedList(){
-
         CustomLinkedList<String> testLinkedList1 = new CustomLinkedList<String>();
         testLinkedList1.add(FIRST_ELEMENT);
         testLinkedList1.add(SECOND_ELEMENT);
@@ -39,5 +36,20 @@ public class TestUtils {
         testLinkedList1.add(NINTH_ELEMENT);
         testLinkedList1.add(TENTH_ELEMENT);
         return testLinkedList1;
+    }
+
+    public static CustomArrayList<String> fillTestArrayList () {
+        CustomArrayList<String> testList = new CustomArrayList<>();
+        testList.add(FIRST_ELEMENT);
+        testList.add(SECOND_ELEMENT);
+        testList.add(THIRD_ELEMENT);
+        testList.add(FOURTH_ELEMENT);
+        testList.add(FIFTH_ELEMENT);
+        testList.add(SIXTH_ELEMENT);
+        testList.add(SEVENTH_ELEMENT);
+        testList.add(EIGHTH_ELEMENT);
+        testList.add(NINTH_ELEMENT);
+        testList.add(TENTH_ELEMENT);
+        return testList;
     }
 }

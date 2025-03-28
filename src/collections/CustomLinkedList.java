@@ -3,14 +3,14 @@ package collections;
 import java.io.Serializable;
 import java.util.*;
 
-import static java.util.Collections.addAll;
+import collections.interfaces.CustomList;
 
 /**
  * Класс CustomLinkedList представляет собой кастомную реализацию связанного списка.
  *
  * @param <T> тип элементов, которые будут храниться в списке
  */
-public class CustomLinkedList<T> implements Serializable {
+public class CustomLinkedList<T> implements CustomList<T>, Serializable {
 
     /**
      * Текущий размер списка (количество элементов)
@@ -40,6 +40,7 @@ public class CustomLinkedList<T> implements Serializable {
      *
      * @return количество элементов в списке
      */
+    @Override
     public int size() {
         return size;
     }
@@ -49,6 +50,7 @@ public class CustomLinkedList<T> implements Serializable {
      *
      * @return true, если список не содержит элементов
      */
+    @Override
     public boolean isEmpty() {
         switch(this.size){
             case 0:
@@ -67,6 +69,7 @@ public class CustomLinkedList<T> implements Serializable {
      * @param item добавляемый элемент
      * @return true (согласно спецификации {@link Collection#add})
      */
+    @Override
     public boolean add(T item) {
         LinkedListNode<T> node = new LinkedListNode<>(item);
 
@@ -91,11 +94,16 @@ public class CustomLinkedList<T> implements Serializable {
      * @param element элемент для вставки
      * @throws IndexOutOfBoundsException если индекс выходит за пределы допустимого диапазона
      *         (index < 0 || index > size)
+     * @throws NullPointerException если {@link @param element} null
      */
+    @Override
     public void add(int index, T element) {
 
         if (index < 0 || index > size) {
             throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+        }
+        if(element == null) {
+            throw new NullPointerException("Element cannot be null");
         }
 
         if (index == 0) {
@@ -148,6 +156,7 @@ public class CustomLinkedList<T> implements Serializable {
      * @param element элемент для добавления
      * @throws NullPointerException если указанный элемент равен null
      */
+    @Override
     public void addFirst(T element) {
         if (element == null) {
             throw new NullPointerException("Element cannot be null");
@@ -169,6 +178,7 @@ public class CustomLinkedList<T> implements Serializable {
      * @param element элемент для добавления
      * @throws NullPointerException если указанный элемент равен null
      */
+    @Override
     public void addLast(T element) {
         if (element == null) {
             throw new NullPointerException("Element cannot be null");
@@ -191,6 +201,7 @@ public class CustomLinkedList<T> implements Serializable {
      * @return true, если список содержал указанный элемент
      * @throws NullPointerException если переданный в качестве параметра элемент равен null
      */
+    @Override
     public boolean remove(Object item) {
         if (item == null) {
             throw new NullPointerException("Element cannot be null");
@@ -226,6 +237,8 @@ public class CustomLinkedList<T> implements Serializable {
         return false;
     }
 
+
+
     /**
      * Возвращает элемент, который находится в указанной позиции в списке.
      *
@@ -233,6 +246,7 @@ public class CustomLinkedList<T> implements Serializable {
      * @return элемент в указанной позиции в данном списке
      * @throws IndexOutOfBoundsException в случае, если индекс выходит за пределы допустимого диапазона (index < 0 || index >= size)
      */
+    @Override
     public T get(int index) {
 
         return getNode(index).getNode();
@@ -248,6 +262,7 @@ public class CustomLinkedList<T> implements Serializable {
      * @throws IndexOutOfBoundsException если индекс выходит за пределы допустимого диапазона (index < 0 || index >= size)
      * @throws NullPointerException если новый элемент равен null
      */
+    @Override
     public T set(int index, T element) {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
@@ -274,6 +289,7 @@ public class CustomLinkedList<T> implements Serializable {
      * @return элемент, который находился на указанной позиции
      * @throws IndexOutOfBoundsException если индекс выходит за пределы допустимого диапазона (index < 0 || index >= size)
      */
+    @Override
     public T remove(int index) {
 
         if (index < 0 || index >= size) {
@@ -307,6 +323,7 @@ public class CustomLinkedList<T> implements Serializable {
      * @return первый элемент списка
      * @throws NoSuchElementException если список пуст
      */
+    @Override
     public T removeFirst() {
         if (head == null) {
             throw new NoSuchElementException();
@@ -329,6 +346,7 @@ public class CustomLinkedList<T> implements Serializable {
      * @return последний элемент из списка
      * @throws NoSuchElementException если список пуст
      */
+    @Override
     public T removeLast() {
         if (tail == null) {
             throw new NoSuchElementException();
@@ -360,6 +378,7 @@ public class CustomLinkedList<T> implements Serializable {
      *         или -1, если элемент не найден
      * @throws NullPointerException если переданный в качестве параметра элемент равен null
      */
+    @Override
     public int indexOf(Object o) {
         if (o == null) {
             throw new NullPointerException("Element cannot be null");
@@ -388,6 +407,7 @@ public class CustomLinkedList<T> implements Serializable {
      * @return true, если список содержит указанный элемент
      * @throws NullPointerException если переданный в качестве параметра элемент равен null
      */
+    @Override
     public boolean contains(Object o) {
         if (o == null) {
             throw new NullPointerException("Element cannot be null");
@@ -406,10 +426,46 @@ public class CustomLinkedList<T> implements Serializable {
     /**
      * обнуляет размер списка, головной и хвостовой элементы.
      */
+    @Override
     public void clear() {
 
         size = 0;
         head = null;
         tail = null;
+    }
+
+    @Override
+    public boolean containsAll(Collection<?> c) {
+        return false;
+    }
+
+    @Override
+    public boolean addAll(Collection<? extends T> c) {
+        return false;
+    }
+
+    @Override
+    public boolean removeAll(Collection<?> c) {
+        return false;
+    }
+
+    @Override
+    public boolean retainAll(Collection<?> c) {
+        return false;
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return null;
+    }
+
+    @Override
+    public Object[] toArray() {
+        return new Object[0];
+    }
+
+    @Override
+    public <T1> T1[] toArray(T1[] a) {
+        return null;
     }
 }

@@ -1,38 +1,51 @@
 package tests.collections;
 
+import collections.CustomArrayList;
 import collections.CustomLinkedList;
-import org.junit.Test;
+import collections.interfaces.CustomList;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.params.provider.MethodSource;
 import tests.collections.utils.TestUtils;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.*;
 
-public class CustomLinkedListTests {
+public class CustomListTests {
 
 
-    CustomLinkedList<String> testList = TestUtils.fillTestLinkedList();
+    private static CustomLinkedList<String> testLinkedList = new CustomLinkedList<>();
+    private static CustomArrayList<String> testArrayList = new CustomArrayList<>();
+
+    static List<Object[]> customCollectionsImplementations() {
+        return List.of(
+                new Object[] {testLinkedList},
+                new Object[] {testArrayList}
+        );
+    }
 
     @BeforeEach
-    public void setTestListToBaseCondition() {
-        testList = TestUtils.fillTestLinkedList();
+    public void setUp() {
+        testLinkedList = TestUtils.fillTestLinkedList();
+        testArrayList = TestUtils.fillTestArrayList();
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("customCollectionsImplementations")
     @DisplayName("check collection size. Expected successful result")
-    public void sizeTestCorrect() {
-        assertEquals(testList.size(), TestUtils.SIZE_OF_LIST);
+    public void sizeTestCorrect(CustomList<String> testList) {
+        assertEquals(TestUtils.SIZE_OF_LIST, testList.size());
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("customCollectionsImplementations")
     @DisplayName("check collection size. Expected unsuccessful result")
-    public void sizeTestIncorrect() {
+    public void sizeTestIncorrect(CustomList<String> testList) {
         assertNotEquals(0, testList.size());
     }
 
@@ -42,41 +55,47 @@ public class CustomLinkedListTests {
         assertTrue(new CustomLinkedList<String>().isEmpty());
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("customCollectionsImplementations")
     @DisplayName("check isEmpty method. Returns false")
-    public void isEmptyTestReturnsFalse() {
+    public void isEmptyTestReturnsFalse(CustomList<String> testList) {
         assertFalse(testList.isEmpty());
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("customCollectionsImplementations")
     @DisplayName("check get method. Expected successful result")
-    public void getTestReturnsTrue() {
+    public void getTestReturnsTrue(CustomList<String> testList) {
         assertEquals(TestUtils.FIRST_ELEMENT, testList.get(0));
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("customCollectionsImplementations")
     @DisplayName("check get method. Expected unsuccessful result")
-    public void getTestReturnsFalse() {
+    public void getTestReturnsFalse(CustomList<String> testList) {
         assertNotEquals(TestUtils.ELEMENT_NOT_IN_LIST, testList.get(0));
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("customCollectionsImplementations")
     @DisplayName("check get method. Expected IndexOutOfBoundsException")
-    public void getTestReturnsIndexOutOfBoundsException() {
+    public void getTestReturnsIndexOutOfBoundsException(CustomList<String> testList) {
         assertThrows(IndexOutOfBoundsException.class, () -> testList.get(TestUtils.SIZE_OF_LIST));
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("customCollectionsImplementations")
     @DisplayName("check add method ( add(T item) ). Expected successful result")
-    public void add_Item_TestReturnsTrue() {
+    public void add_Item_TestReturnsTrue(CustomList<String> testList) {
         assertTrue(testList.add(TestUtils.NEW_ELEMENT));
         assertEquals(TestUtils.SIZE_OF_LIST + 1, testList.size());
         assertEquals(TestUtils.NEW_ELEMENT, testList.get(TestUtils.SIZE_OF_LIST));
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("customCollectionsImplementations")
     @DisplayName("check add method ( add(int index, T item) ) when 0 < index < list.size() . Expected successful result")
-    public void add_ByIndex_TestReturnsTrue() {
+    public void add_ByIndex_TestReturnsTrue(CustomList<String> testList) {
         assertEquals(TestUtils.SIXTH_ELEMENT, testList.get(5));
         testList.add(5, TestUtils.NEW_ELEMENT);
         assertEquals(TestUtils.NEW_ELEMENT, testList.get(5));
@@ -84,45 +103,52 @@ public class CustomLinkedListTests {
         assertEquals(TestUtils.SIZE_OF_LIST + 1, testList.size());
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("customCollectionsImplementations")
     @DisplayName("check add method ( add(int index, T item) ) when index < 0 . Expected IndexOutOfBoundsException")
-    public void add_ByIndex_Test_WhenIndexIsNegative_ReturnsIndexOutOfBoundException() {
+    public void add_ByIndex_Test_WhenIndexIsNegative_ReturnsIndexOutOfBoundException(CustomList<String> testList) {
         assertThrows(IndexOutOfBoundsException.class, () -> testList.add(-1, TestUtils.NEW_ELEMENT));
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("customCollectionsImplementations")
     @DisplayName("check add method ( add(int index, T item) ) when index > testList.size() . Expected IndexOutOfBoundsException")
-    public void add_ByIndex_Test_WhenIndexOverreachCollectionSize_ReturnsIndexOutOfBoundException() {
+    public void add_ByIndex_Test_WhenIndexOverreachCollectionSize_ReturnsIndexOutOfBoundException(CustomList<String> testList) {
         assertThrows(IndexOutOfBoundsException.class, () -> testList.add(TestUtils.SIZE_OF_LIST + 1, TestUtils.NEW_ELEMENT));
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("customCollectionsImplementations")
     @DisplayName("check add method ( add(int index, T item) ) when index < 0 . Expected IndexOutOfBoundsException")
-    public void add_ByIndex_Test_WhenElementIsNull_ReturnsNullPointerException() {
+    public void add_ByIndex_Test_WhenElementIsNull_ReturnsNullPointerException(CustomList<String> testList) {
         assertThrows(NullPointerException.class, () -> testList.add(1, null));
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("customCollectionsImplementations")
     @DisplayName("check addFirst method. Expected successful result")
-    public void addFirstTestReturnsTrue() {
+    public void addFirstTestReturnsTrue(CustomList<String> testList) {
 
         var size = testList.size();
         testList.addFirst(TestUtils.NEW_ELEMENT);
         assertEquals(TestUtils.NEW_ELEMENT, testList.get(0));
         assertEquals(size + 1, testList.size());
         assertEquals(TestUtils.FIRST_ELEMENT, testList.get(1));
+        assertEquals(TestUtils.TENTH_ELEMENT, testList.get(TestUtils.SIZE_OF_LIST));
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("customCollectionsImplementations")
     @DisplayName("check addFirst method. Expected NullPointerException")
-    public void addFirstTestReturnsNullPointerException() {
+    public void addFirstTestReturnsNullPointerException(CustomList<String> testList) {
 
         assertThrows(NullPointerException.class, () -> testList.addFirst(null));
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("customCollectionsImplementations")
     @DisplayName("check addLast method. Expected successful result")
-    public void addLastTestReturnsTrue() {
+    public void addLastTestReturnsTrue(CustomList<String> testList) {
 
         var size = testList.size();
         testList.addLast(TestUtils.NEW_ELEMENT);
@@ -130,16 +156,18 @@ public class CustomLinkedListTests {
         assertEquals(size + 1, testList.size());
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("customCollectionsImplementations")
     @DisplayName("check addLast method. Expected NullPointerException")
-    public void addLastTestReturnsNullPointerException() {
+    public void addLastTestReturnsNullPointerException(CustomList<String> testList) {
 
         assertThrows(NullPointerException.class, () -> testList.addLast(null));
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("customCollectionsImplementations")
     @DisplayName("check removeFirst method. Expected successful result")
-    public void removeFirstTestReturnsTrue() {
+    public void removeFirstTestReturnsTrue(CustomList<String> testList) {
         var size = testList.size();
         assertEquals(TestUtils.FIRST_ELEMENT, testList.get(0));
         assertEquals(TestUtils.SIZE_OF_LIST, size);
@@ -147,6 +175,7 @@ public class CustomLinkedListTests {
         assertEquals(size - 1, testList.size());
         assertEquals(TestUtils.SECOND_ELEMENT, testList.get(0));
     }
+
     @Test
     @DisplayName("check removeFirst method. Expected NoSuchElementException")
     public void removeFirstTestReturnsNoSuchElementException() {
@@ -154,9 +183,10 @@ public class CustomLinkedListTests {
         assertThrows(NoSuchElementException.class, testListEmpty::removeFirst);
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("customCollectionsImplementations")
     @DisplayName("check removeLast method. Expected successful result")
-    public void removeLastTestReturnsTrue() {
+    public void removeLastTestReturnsTrue(CustomList<String> testList) {
         var size = testList.size();
         assertEquals(TestUtils.SIZE_OF_LIST, size);
         assertEquals(TestUtils.TENTH_ELEMENT, testList.get(size - 1));
@@ -172,9 +202,10 @@ public class CustomLinkedListTests {
         assertThrows(NoSuchElementException.class, testListEmpty::removeLast);
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("customCollectionsImplementations")
     @DisplayName("check remove method. Expected successful result")
-    public void removeTestReturnsTrue() {
+    public void removeTestReturnsTrue(CustomList<String> testList) {
         var size = testList.size();
         assertEquals(TestUtils.SIZE_OF_LIST, size);
         assertEquals(TestUtils.SIXTH_ELEMENT, testList.get(5));
@@ -183,21 +214,24 @@ public class CustomLinkedListTests {
         assertEquals(TestUtils.SEVENTH_ELEMENT, testList.get(5));
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("customCollectionsImplementations")
     @DisplayName("check remove method ( remove (Object item) ). Expected unsuccessful result")
-    public void remove_Item_TestReturnsFalse() {
+    public void remove_Item_TestReturnsFalse(CustomList<String> testList) {
         assertNotEquals(testList.remove(TestUtils.ELEMENT_NOT_IN_LIST), true);
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("customCollectionsImplementations")
     @DisplayName("check remove method ( remove (Object item) ). Expected NullPointerException")
-    public void remove_Item_Test_ReturnsNullPointerException() {
+    public void remove_Item_Test_ReturnsNullPointerException(CustomList<String> testList) {
         assertThrows(NullPointerException.class, () -> testList.remove(null));
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("customCollectionsImplementations")
     @DisplayName("check remove method ( remove (int index ) when 0 < index < list.size(). Expected successful result")
-    public void remove_ByIndex_TestReturnsTrue() {
+    public void remove_ByIndex_TestReturnsTrue(CustomList<String> testList) {
 
         assertEquals(TestUtils.SIZE_OF_LIST, testList.size());
         assertEquals(TestUtils.SIXTH_ELEMENT, testList.get(5));
@@ -206,59 +240,68 @@ public class CustomLinkedListTests {
         assertEquals(TestUtils.SIZE_OF_LIST - 1, testList.size());
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("customCollectionsImplementations")
     @DisplayName("check remove method ( remove (int index ) when index < 0. Expected IndexOutOfBoundsException")
-    public void remove_ByIndex_Test_WhenIndexNegative_ReturnsIndexOutOfBoundException() {
+    public void remove_ByIndex_Test_WhenIndexNegative_ReturnsIndexOutOfBoundException(CustomList<String> testList) {
 
         assertThrows(IndexOutOfBoundsException.class, () -> testList.remove(-1));
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("customCollectionsImplementations")
     @DisplayName("check remove method ( remove (int index ) when index < 0. Expected IndexOutOfBoundsException")
-    public void remove_ByIndex_Test_WhenIndexOverreachCollectionSize_ReturnsIndexOutOfBoundException() {
+    public void remove_ByIndex_Test_WhenIndexOverreachCollectionSize_ReturnsIndexOutOfBoundException(CustomList<String> testList) {
 
         assertThrows(IndexOutOfBoundsException.class, () -> testList.remove(TestUtils.SIZE_OF_LIST + 1));
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("customCollectionsImplementations")
     @DisplayName("check indexOf method. Expected successful result")
-    public void indexOfTestReturnsTrue() {
+    public void indexOfTestReturnsTrue(CustomList<String> testList) {
         assertEquals(5, testList.indexOf(TestUtils.SIXTH_ELEMENT));
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("customCollectionsImplementations")
     @DisplayName("check indexOf method. Expected unsuccessful result")
-    public void indexOfTestReturnsFalse() {
+    public void indexOfTestReturnsFalse(CustomList<String> testList) {
         assertEquals(-1, testList.indexOf(TestUtils.ELEMENT_NOT_IN_LIST));
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("customCollectionsImplementations")
     @DisplayName("check indexOf method. Expected NullPointerException")
-    public void indexOfTestReturnsNullPointerException() {
+    public void indexOfTestReturnsNullPointerException(CustomList<String> testList) {
         assertThrows(NullPointerException.class, () -> testList.indexOf(null));
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("customCollectionsImplementations")
     @DisplayName("check contains method. Expected successful result")
-    public void containsTestReturnsTrue() {
+    public void containsTestReturnsTrue(CustomList<String> testList) {
         assertTrue(testList.contains(TestUtils.SIXTH_ELEMENT));
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("customCollectionsImplementations")
     @DisplayName("check contains method. Expected unsuccessful result")
-    public void containsTestReturnsFalse() {
+    public void containsTestReturnsFalse(CustomList<String> testList) {
         assertFalse(testList.contains(TestUtils.ELEMENT_NOT_IN_LIST));
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("customCollectionsImplementations")
     @DisplayName("check contains method. Expected NullPointerException")
-    public void containsTestReturnsNullPointerException() {
+    public void containsTestReturnsNullPointerException(CustomList<String> testList) {
         assertThrows(NullPointerException.class, () -> testList.contains(null));
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("customCollectionsImplementations")
     @DisplayName("check clear method. Expected successful result")
-    public void clearTestReturnsTrue() {
+    public void clearTestReturnsTrue(CustomList<String> testList) {
         assertEquals(TestUtils.SIZE_OF_LIST, testList.size());
         assertFalse(testList.isEmpty());
         testList.clear();

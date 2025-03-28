@@ -1,20 +1,16 @@
 package collections;
 
 import java.io.Serializable;
-import java.util.List;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.ListIterator;
-import java.util.NoSuchElementException;
+import java.util.*;
+
+import collections.interfaces.CustomList;
 
 /**
  * Класс CustomArrayList представляет собой реализацию интерфейса List на основе массива.
  *
  * @param <T> тип элементов, которые будут храниться в коллекции
  */
-public class CustomArrayList<T> implements List<T>, Serializable {
+public class CustomArrayList<T> implements CustomList<T>, Serializable {
 
     /**
      * Начальная емкость массива по умолчанию
@@ -164,12 +160,16 @@ public class CustomArrayList<T> implements List<T>, Serializable {
      * @param index индекс, по которому должен быть вставлен указанный элемент
      * @param element элемент для вставки
      * @throws IndexOutOfBoundsException если индекс выходит за пределы (index < 0 || index > size())
+     * @throws NullPointerException если {@link @param element} null
      */
     @Override
     public void add(int index, T element) {
 
         if (index >= size || index < 0) {
             throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+        }
+        if(element == null) {
+            throw new NullPointerException("Element cannot be null");
         }
 
         if (array.length <= size + 1) {
@@ -181,6 +181,49 @@ public class CustomArrayList<T> implements List<T>, Serializable {
         }
         size++;
         array[index] = element;
+    }
+
+    /**
+     * Вставляет указанный элемент в начало списка.
+     *
+     * @param element элемент для добавления
+     * @throws NullPointerException если указанный элемент равен null
+     */
+    @Override
+    public void addFirst(T element) {
+        if (element == null) {
+            throw new NullPointerException("Element cannot be null");
+        }
+
+        if(this.size == 0) {
+            this.add(element);
+        }
+        if(this.size > 0) {
+
+            if (array.length <= size + 1) {
+                growArray();
+            }
+
+            for (int i = size; i >  0; i--) {
+                array[i] = array[i - 1];
+            }
+            size++;
+            array[0] = element;
+        }
+    }
+
+    /**
+     * Вставляет указанный элемент в конец списка.
+     *
+     * @param element элемент для добавления
+     * @throws NullPointerException если добавляемый {@link @param element} равен null
+     */
+    @Override
+    public void addLast(T element) {
+        if(element == null) {
+            throw new NullPointerException("Element cannot be null");
+        }
+        this.add(element);
     }
 
     /**
@@ -304,6 +347,9 @@ public class CustomArrayList<T> implements List<T>, Serializable {
      */
     @Override
     public int indexOf(Object item) {
+        if (item == null) {
+            throw new NullPointerException("Item cannot be null");
+        }
 
         for (int i = 0; i < size; i++) {
             if (array[i].equals(item)) {
@@ -325,6 +371,9 @@ public class CustomArrayList<T> implements List<T>, Serializable {
      */
     @Override
     public boolean contains(Object item) {
+        if (item == null) {
+            throw new NullPointerException("Item cannot be null");
+        }
         return indexOf(item) != -1;
     }
 
@@ -339,7 +388,6 @@ public class CustomArrayList<T> implements List<T>, Serializable {
      * @throws NullPointerException если указанный массив null
      */
     @Override
-    @SuppressWarnings("unchecked")
     public <T1> T1[] toArray(T1[] incArray) {
         if (incArray == null) {
             throw new NullPointerException("Target array must not be null");
@@ -409,43 +457,6 @@ public class CustomArrayList<T> implements List<T>, Serializable {
         size += incCollectionSize;
 
         return incCollectionSize > 0;
-    }
-
-    /**
-     * Вставляет все элементы из указанной коллекции в этот список в указанной позиции.
-     *
-     * @param index индекс, по которому будет вставлен первый элемент из указанной коллекции
-     * @param collection коллекция, содержащая элементы, которые будут добавлены в этот список
-     * @return true, если этот список изменился в результате вызова
-     * @throws IndexOutOfBoundsException если индекс выходит за пределы (index < 0 || index >= size())
-     * @throws NullPointerException если указанная коллекция null
-     */
-    @Override
-    public boolean addAll(int index, Collection<? extends T> collection) {
-        if (collection == null) {
-            throw new NullPointerException("Collection must not be null");
-        }
-        if (index < 0 || index > size) {
-            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
-        }
-
-        Object[] elementsToAdd = collection.toArray();
-        int numNew = elementsToAdd.length;
-        if (numNew == 0) {
-            return false;
-        }
-
-        ensureCapacity(size + numNew);
-
-        int numMoved = size - index;
-        if (numMoved > 0) {
-            System.arraycopy(array, index, array, index + numNew, numMoved);
-        }
-
-        System.arraycopy(elementsToAdd, 0, array, index, numNew);
-        size += numNew;
-
-        return true;
     }
 
     private void ensureCapacity(int minCapacity) {
@@ -538,97 +549,41 @@ public class CustomArrayList<T> implements List<T>, Serializable {
     }
 
     /**
-     * Возвращает индекс последнего вхождения указанного элемента в этом списке
-     * или -1, если элемент не содержится в списке.
-     * Более формально, возвращает максимальный индекс {@code i}, такой что
-     * {@code Objects.equals(o, get(i))},
-     * или -1, если такого индекса не существует.
-     *
-     * @param item элемент, который нужно найти
-     * @return индекс последнего вхождения элемента или -1, если элемент не найден
+     * Удаляет и возвращает первый элемент из списка.
+     * <p>
+     *     Реализация этого метода не входила в задание, но переорпделение
+     *     этого метода обязательно для имплементации интерфейса {@link @param Collection}.
+     *     Поэтому в данном метде вызывается метод {@link #remove(int)} с параметром 0.
+     *     </p>
+     * @return первый элемент списка
+     * @throws NoSuchElementException если список пуст
+     * @see #isEmpty()
+     * @see #remove(int)
      */
     @Override
-    public int lastIndexOf(Object item) {
-        if (item == null) {
-            for (int i = size - 1; i >= 0; i--) {
-                if (array[i] == null) {
-                    return i;
-                }
-            }
-        } else {
-            for (int i = size - 1; i >= 0; i--) {
-                if (item.equals(array[i])) {
-                    return i;
-                }
-            }
-        }
-        return -1;
+    public T removeFirst() {
+        var removedElement = array[0];
+        this.remove(0);
+        return (T) removedElement;
     }
 
     /**
-     * Возвращает список итераторов элементов в этом списке в правильной последовательности.
+     * Удаляет и возвращает последний элемент из списка.
      * <p>
      *     Реализация этого метода не входила в задание, но переорпделение
-     *     этого метода обязательно для имплементации интерфейса List.
-     *     Поэтому в данном метде вызывается метод listIterator() -без параметра- из класса ArrayList.
+     *     этого метода обязательно для имплементации интерфейса {@link @param Collection}.
+     *     Поэтому в данном метде вызывается метод {@link #remove(int)} с параметром size - 1.
      *     </p>
-     * @return итератор списка, который можно использовать для обхода элементов в обоих направлениях,
-     *         добавления, удаления и изменения элементов во время итерации.
+     * @return последний элемент списка
+     * @throws NoSuchElementException если список пуст
+     * @see #isEmpty()
+     * @see #remove(int)
      */
     @Override
-    public ListIterator<T> listIterator() {
-        List<T> list = new ArrayList<>(List.of(array));
-
-        return list.listIterator();
+    public T removeLast() {
+        var removedElement = array[size - 1];
+        this.remove(size - 1);
+        return (T) removedElement;
     }
 
-    /**
-     * Возвращает итератор списка элементов в этом списке в правильной последовательности, начиная с указанного индекса.
-     * <p>
-     *     Реализация этого метода не входила в задание, но переорпделение
-     *     этого метода обязательно для имплементации интерфейса List.
-     *     Поэтому в данном метде вызывается метод listIterator(int index) -с параметром int index- из класса ArrayList.
-     *     </p>
-     * @param index
-     *          Индекс, с которого должен начинаться итератор (0 для первого элемента).
-     *
-     * @return итератор списка, который можно использовать для обхода элементов в обоих направлениях,
-     *         начиная с указанного индекса, а также для добавления, удаления и изменения элементов во время итерации.
-     *
-     * @throws IndexOutOfBoundsException
-     *          если index < 0 || index >= size()
-     */
-    @Override
-    public ListIterator<T> listIterator(int index) {
-        List<T> list = new ArrayList<>(List.of(array));
-        return list.listIterator(index);
-    }
-
-    /**
-     * Возвращает представление части этого списка между указанными индексами.
-     *
-     * <p>
-     *     Реализация этого метода не входила в задание, но переорпделение
-     *     этого метода обязательно для имплементации интерфейса List.
-     *     Поэтому в данном метде вызывается метод subList() из класса ArrayList.
-     *     </p>
-     * @param fromIndex
-     * Индекс начала подсписка (включительно).
-     *
-     * @param toIndex
-     * Индекс конца подсписка (исключительно).
-     *
-     * @return представление части этого списка между fromIndex (включительно) и toIndex (исключительно).
-     *
-     * @throws IndexOutOfBoundsException
-     * если fromIndex < 0 || toIndex > size() || fromIndex >= toIndex
-     *
-     * @throws IllegalArgumentException
-     * если fromIndex > toIndex
-     */
-    @Override
-    public List<T> subList(int fromIndex, int toIndex) {
-        List<T> list = new ArrayList<>(List.of(array));
-        return list.subList(fromIndex, toIndex);
-    }
 }
