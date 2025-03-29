@@ -17,6 +17,10 @@ import collections.interfaces.CustomList;
  * - Обеспечивает произвольный доступ O(1) по индексу
  * - Автоматически расширяет внутренний массив при необходимости
  * </p>
+ *
+ * @version 1.0
+ * @author 4ndr33w
+ *
  * @param <T> тип хранимых элементов
  * @see CustomList
  * @see Iterable

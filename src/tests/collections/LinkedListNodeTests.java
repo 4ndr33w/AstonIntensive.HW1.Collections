@@ -17,6 +17,10 @@ import static org.junit.Assert.assertNotEquals;
  * создание узлов, установку и получение значений, управление ссылками
  * на соседние узлы.
  * </p>
+ *
+ * @version 1.0
+ * @author 4ndr33w
+ *
  * @see LinkedListNode
  */
 public class LinkedListNodeTests {

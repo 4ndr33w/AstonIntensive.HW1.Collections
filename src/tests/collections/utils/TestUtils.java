@@ -2,6 +2,7 @@ package tests.collections.utils;
 
 import collections.CustomArrayList;
 import collections.CustomLinkedList;
+import collections.interfaces.CustomList;
 
 import java.util.List;
 
@@ -18,6 +19,10 @@ import java.util.List;
  * - Заполнение коллекций тестовыми данными
  * - Предоставление готовых наборов данных для тестов
  *
+ * @version 1.0
+ * @author 4ndr33w
+ *
+ * @see CustomList
  * @see CustomLinkedList
  * @see CustomArrayList
  */
@@ -43,7 +48,6 @@ public class TestUtils {
 
     public static final int SIZE_OF_LIST = 10;
 
-    //private static Integer[] testIntegerArray = unsortedIntegerArray();
 
     public static CustomLinkedList<String> fillTestLinkedListByStrings(){
         CustomLinkedList<String> testLinkedList = new CustomLinkedList<String>();

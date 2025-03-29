@@ -19,6 +19,9 @@ import java.util.Objects;
  * - Обеспечивает возможность эффективной вставки и удаления элементов
  * </p>
  *
+ * @version 1.0
+ * @author 4ndr33w
+ *
  * @param <T> тип хранимых данных в узле
  * @see CustomLinkedList
  */

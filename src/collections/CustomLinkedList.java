@@ -21,6 +21,10 @@ import collections.interfaces.CustomList;
  * - Не требует предварительного выделения памяти
  * - Эффективно использует память при частых вставках/удалениях
  * </p>
+ *
+ * @version 1.0
+ * @author 4ndr33w
+ *
  * @param <T> тип хранимых элементов
  * @see CustomList
  * @see Iterable
