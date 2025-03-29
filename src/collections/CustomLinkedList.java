@@ -93,12 +93,12 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
     /**
      * Добавляет новый элемент в конец списка.
      *
-     * <p>Метод создает новый узел с переданным значением и добавляет его в конец списка.
+     * <p>Метод создает новый узел с переданным значением {@code element} и добавляет его в конец списка.
      * Если список пуст, новый узел становится как головой, так и хвостом списка.
      *
      * @param element добавляемый элемент
      * @return true (согласно спецификации {@link Collection#add})
-     * @throws NullPointerException если {@link @param element} null
+     * @throws NullPointerException если {@code element} равен {@code null}
      */
     @Override
     public boolean add(T element) {
@@ -119,14 +119,14 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
 
     /**
      * Вставляет указанный элемент в заданную позицию в списке.
-     * Сдвигает элемент, который находится в указанной позиции (если он есть),
-     * и все последующие элементы вправо (увеличивает их индексы на единицу).
      *
-     * @param index индекс, по которому должен быть вставлен указанный элемент
+     * @param index позиция, на которую должен быть вставлен указанный элемент
      * @param element элемент для вставки
-     * @throws IndexOutOfBoundsException если индекс выходит за пределы допустимого диапазона
-     *         (index < 0 || index > size)
-     * @throws NullPointerException если {@link @param element} null
+     * @throws IndexOutOfBoundsException если {@code index} выходит за пределы допустимого диапазона
+     * <p>
+     *         (index < 0 || index >= size)
+     * </p>
+     * @throws NullPointerException если {@code element} равен {@code null}
      */
     @Override
     public void add(int index, T element) {
@@ -158,7 +158,10 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
      *
      * @param index позиция узла, который должен быть возвращен
      * @return узел в указанной позиции в данном списке
-     * @throws IndexOutOfBoundsException в случае, если индекс выходит за пределы допустимого диапазона (index < 0 || index >= size)
+     * @throws IndexOutOfBoundsException в случае, если {@code index} выходит за пределы допустимого диапазона
+     * <p>
+     *     (index < 0 || index >= size)
+     * </p>
      */
     private LinkedListNode<T> getNode(int index) {
         Objects.checkIndex(index, size);
@@ -175,11 +178,14 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
     }
 
     /**
-     * Возвращает элемент, который находится в указанной позиции в списке.
+     * Возвращает элемент, который находится по указанной позиции в списке.
      *
      * @param index позиция элемента, который должен быть возвращен
-     * @return элемент в указанной позиции в данном списке
-     * @throws IndexOutOfBoundsException в случае, если индекс выходит за пределы допустимого диапазона (index < 0 || index >= size)
+     * @return элемент в указанной позиции списке
+     * @throws IndexOutOfBoundsException в случае, если {@code index} выходит за пределы допустимого диапазона
+     * <p>
+     *     (index < 0 || index >= size)
+     * </p>
      */
     @Override
     public T get(int index) {
@@ -188,14 +194,19 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
     }
 
     /**
-     * Заменяет элемент, который находится в указанной позиции в списке элементом, переданным в качестве параметра.
-     * Возвращает объект, который ранее находился на указанной позиции в списке.
+     * Заменяет элемент, который находится в узле на указанной позиции на новый {@code element}.
+     * <p>
+     * Возвращает объект, который ранее находился в узле на указанной позиции в списке.
+     * </p>
      *
      * @param index Позиция заменяемого элемента в списке
-     * @param element Новый элемент, который будет установлен на указанную позицию
-     * @return объект, который ранее находился на указанной позиции в списке
-     * @throws IndexOutOfBoundsException если индекс выходит за пределы допустимого диапазона (index < 0 || index >= size)
-     * @throws NullPointerException если новый элемент равен null
+     * @param element Новый элемент, который будет установлен в узле на указанной позиции
+     * @return объект, который ранее находился в узле на указанной позиции
+     * @throws IndexOutOfBoundsException если {@code index} выходит за границы диапазона
+     * <p>
+     *         (index < 0 || index >= size)
+     * </p>
+     * @throws NullPointerException если {@code element} равен {@code null}
      */
     @Override
     public T set(int index, T element) {
@@ -216,7 +227,7 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
      *
      * @param element элемент, который должен быть удален из списка, если присутствует
      * @return true, если список содержал указанный элемент
-     * @throws NullPointerException если переданный в качестве параметра элемент равен null
+     * @throws NullPointerException если {@code element} равен {@code null}
      */
     @Override
     public boolean remove(Object element) {
@@ -255,12 +266,14 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
 
     /**
      * Удаляет элемент, находящийся на указанной позиции в списке.
-     * Сдвигает все последующие элементы влево (уменьшает их индексы на единицу).
      * Возвращает элемент, который был удален из списка.
      *
-     * @param index индекс удаляемого элемента (0 ≤ index < size)
-     * @return удаленный элемент
-     * @throws IndexOutOfBoundsException если индекс выходит за пределы допустимого диапазона (index < 0 || index >= size)
+     * @param index позиция элемента, который нужно удалить
+     * @return элемент, который находился на указанной позиции
+     * @throws IndexOutOfBoundsException если {@code index} выходит за пределы допустимого диапазона
+     * <p>
+     *      (index < 0 || index >= size)
+     * </p>
      */
     @Override
     public T remove(int index) {
@@ -293,7 +306,6 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
         tail = null;
     }
 
-
     //------------------------------------------------------------------------
     // Изначально я начал расширял CustomList интерфейсом Collection,
     // по этому начал реализовывать остальные его методы.
@@ -307,7 +319,7 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
      * Вставляет указанный элемент в начало списка.
      *
      * @param element элемент для добавления
-     * @throws NullPointerException если указанный элемент равен null
+     * @throws NullPointerException если добавляемый {@code element} равен {@code null}
      */
     @Override
     public void addFirst(T element) {
@@ -327,7 +339,7 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
      * Вставляет указанный элемент в конец списка.
      *
      * @param element элемент для добавления
-     * @throws NullPointerException если указанный элемент равен null
+     * @throws NullPointerException если добавляемый {@code element} равен {@code null}
      */
     @Override
     public void addLast(T element) {
@@ -344,7 +356,8 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
     }
 
     /**
-     * Удаляет и возвращает первый элемент списка.
+     * Удаляет первый элемент из списка
+     * и возврашает значение удаленного элемента.
      *
      * @return первый элемент списка
      * @throws NoSuchElementException если список пуст
@@ -368,7 +381,8 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
     }
 
     /**
-     * Удаляет и возвращает последний элемент списка.
+     * Удаляет последний элемент из списка
+     * и возврашает значение удаленного элемента.
      *
      * @return последний элемент из списка
      * @throws NoSuchElementException если список пуст
@@ -396,14 +410,11 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
     /**
      * Возвращает индекс первого вхождения указанного элемента списке,
      * или -1, если элемент не содержится в списке.
-     * Более формально, возвращает наименьший индекс {@code i} такой, что
-     * {@code Objects.equals(element, get(i))},
-     * или -1, если такого индекса не существует.
      *
      * @param element элемент для поиска
      * @return индекс первого вхождения элемента,
      *         или -1, если элемент не найден
-     * @throws NullPointerException если переданный в качестве параметра элемент равен null
+     * @throws NullPointerException если искомый {@code element} равен {@code null}
      */
     @Override
     public int indexOf(Object element) {
@@ -430,7 +441,7 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
      *
      * @param element элемент, наличие которого в списке нужно проверить
      * @return true, если список содержит указанный элемент
-     * @throws NullPointerException если переданный в качестве параметра элемент равен null
+     * @throws NullPointerException если указанный {@code element} равен {@code null}
      */
     @Override
     public boolean contains(Object element) {
@@ -447,6 +458,18 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
         return false;
     }
 
+    /**
+     * Возвращает итератор по элементам двусвязного списка.
+     *
+     * Итератор:
+     * - Позволяет проходить по элементам в прямом порядке (в порядке добавления элементов)
+     * - Защищен от параллельных модификаций
+     *
+     * @return итератор по элементам списка
+     *
+     * @throws ConcurrentModificationException если список был модифицирован
+     *         после создания итератора
+     */
     @Override
     public Iterator<T> iterator() {
         return new LinkedListIterator();
@@ -456,7 +479,6 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
         private LinkedListNode<T> current = head;
         private LinkedListNode<T> lastReturned = null;
         private int expectedModCount = modCount;
-        private boolean canRemove = false;
 
         @Override
         public boolean hasNext() {
@@ -472,36 +494,7 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
 
             lastReturned = current;
             current = current.getNext();
-            canRemove = true;
             return lastReturned.getNode();
-        }
-
-        @Override
-        public void remove() {
-            checkForComodification();
-            if (!canRemove) {
-                throw new IllegalStateException();
-            }
-
-            LinkedListNode<T> prev = lastReturned.getPrev();
-            LinkedListNode<T> next = lastReturned.getNext();
-
-            if (prev == null) {
-                head = next;
-            } else {
-                prev.setNext(next);
-            }
-
-            if (next == null) {
-                tail = prev;
-            } else {
-                next.setPrev(prev);
-            }
-
-            size--;
-            modCount++;
-            expectedModCount = modCount;
-            canRemove = false;
         }
 
         private void checkForComodification() {
@@ -510,4 +503,5 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
             }
         }
     }
+
 }

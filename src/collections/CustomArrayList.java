@@ -50,7 +50,7 @@ public class CustomArrayList<T> implements CustomList<T>, Serializable {
      * Создает пустой список с указанной начальной емкостью.
      *
      * @param initialCapacity начальная емкость списка
-     * если начальная емкость меньше или равна нулю,
+     * если начальная емкость {@code initialCapacity} меньше или равна нулю,
      * будет использована начальная емкость по умолчанию.
      */
     public CustomArrayList(int initialCapacity) {
@@ -129,15 +129,17 @@ public class CustomArrayList<T> implements CustomList<T>, Serializable {
     /**
      * Добавляет указанный элемент в конец списка.
      *
-     * @param item элемент, который нужно добавить в конец списка
+     * @param element элемент, который нужно добавить в конец списка
      * @return true (согласно спецификации {@link Collection#add})
+     * @throws NullPointerException если {@code element} равен {@code null}
      */
     @Override
-    public boolean add(T item) {
+    public boolean add(T element) {
+        Objects.requireNonNull(element, "Element cannot be null");
         if(size == array.length) {
             growArray();
         }
-        array[size++] = item;
+        array[size++] = element;
         return true;
     }
 
@@ -153,16 +155,27 @@ public class CustomArrayList<T> implements CustomList<T>, Serializable {
         array = Arrays.copyOf(array, newLength);
     }
 
+    private void ensureCapacity(int minCapacity) {
+        if (minCapacity - array.length > 0) {
+            growArray(minCapacity);
+        }
+    }
+
     /**
-     * Вставляет указанный элемент на требуемую позицию в списке.
+     * Вставляет указанный элемент на заданную позицию в списке.
+     * Сдвигает элементы, начиная с указанной позиции, вправо, чтобы создать
+     * место для вставляемого элемента.
      * <p>
      * При необходимости увеличивает емкость списка (вызвав метод {@link #growArray()})
      * </p>
      *
      * @param index индекс, по которому должен быть вставлен указанный элемент
      * @param element элемент для вставки
-     * @throws IndexOutOfBoundsException если индекс выходит за пределы (index < 0 || index > size())
-     * @throws NullPointerException если {@link @param element} null
+     * @throws IndexOutOfBoundsException если {@code index} выходит за пределы
+     * <p>
+     *     (index < 0 || index >= size)
+     * </p>
+     * @throws NullPointerException если {@code element} равен {@code null}
      */
     @Override
     public void add(int index, T element) {
@@ -179,12 +192,15 @@ public class CustomArrayList<T> implements CustomList<T>, Serializable {
     }
 
     /**
-     * Возвращает элемент в указанной позиции в этом списке.
+     * Возвращает элемент в указанной позиции в списке.
      *
-     * @param index индекс возвращаемого элемента
+     * @param index позиция возвращаемого элемента
      * @return элемент в указанной позиции
-     * @throws IndexOutOfBoundsException если индекс выходит за границы
+     * @throws IndexOutOfBoundsException если {@code index} выходит за границы допустимого диапазона
+     * <p>
      *         (index < 0 || index >= size)
+     * </p>
+
      */
     @Override
     public T get(int index) {
@@ -193,17 +209,24 @@ public class CustomArrayList<T> implements CustomList<T>, Serializable {
     }
 
     /**
-     * Заменяет элемент в указанной позиции в этом списке на указанный элемент.
+     * Заменяет элемент, который находится в указанной позиции на {@code element}, переданный в качестве параметра.
+     *<p>
+     * Возвращает объект, который ранее находился на указанной позиции в коллекции.
+     *</p>
      *
-     * @param index индекс заменяемого элемента
-     * @param element элемент, который будет сохранен в указанной позиции
-     * @return предыдущий элемент в указанной позиции
-     * @throws IndexOutOfBoundsException если индекс выходит за границы диапазона
+     * @param index позиция заменяемого элемента
+     * @param element Новый элемент, который будет установлен на указанную позицию
+     * @return объект, который ранее находился на указанной позиции
+     * @throws IndexOutOfBoundsException если {@code index} выходит за границы диапазона
+     * <p>
      *         (index < 0 || index >= size)
+     * </p>
+     * @throws NullPointerException если {@code element} равен {@code null}
      */
     @Override
     public T set(int index, T element) {
         Objects.checkIndex(index, size);
+        Objects.requireNonNull(element, "Element cannot be null");
         T oldValue = (T) array[index];
         array[index] = element;
         return oldValue;
@@ -214,6 +237,7 @@ public class CustomArrayList<T> implements CustomList<T>, Serializable {
      *
      * @param element элемент, который нужно удалить из этого списка, если он присутствует
      * @return true, если этот список содержал указанный элемент
+     * @throws NullPointerException если {@code element} равен {@code null}
      */
     @Override
     public boolean remove(Object element) {
@@ -228,11 +252,19 @@ public class CustomArrayList<T> implements CustomList<T>, Serializable {
     }
 
     /**
-     * Удаляет элемент по указанному индексу в списке.
-     *
-     * @param index индекс элемента, который нужно удалить
+     * Удаляет элемент, находящийся на указанной позиции в коллекции.
+     * <p>
+     * Сдвигает все последующие элементы влево (уменьшает их индексы на единицу).
+     * </p>
+     * <p>
+     * Возвращает элемент, который был удален из списка.
+     * </p>
+     * @param index позиция элемента, который нужно удалить
      * @return элемент, который был удален из списка
-     * @throws IndexOutOfBoundsException если индекс выходит за пределы (index < 0 || index >= size())
+     * @throws IndexOutOfBoundsException если {@code index} выходит за пределы допустимого диапазона
+     * <p>
+     *      (index < 0 || index >= size)
+     * </p>
      */
     @Override
     public T remove(int index) {
@@ -261,16 +293,20 @@ public class CustomArrayList<T> implements CustomList<T>, Serializable {
     // Изначально я наследовал CustomList<T> от интерфейса Collection,
     // по этому начал реализовывать остальные его методы.
     // Ниже те методы, работу которых успел реализовать
-    // перед тем, как решил отказаться от этой идем
+    // перед тем, как решил отказаться от этой идеи
     // и просто унаследоваться от Iterable<T>
     // для перебора коллекций в цикле foreach.
     //------------------------------------------------------------------------
 
     /**
      * Вставляет указанный элемент в начало списка.
+     * <p>
+     *     Сдвигает элементы списка, начиная с позиции 0,
+     *     вправо, чтобы создать место для вставляемого элемента.
+     * </p>
      *
      * @param element элемент для добавления
-     * @throws NullPointerException если указанный элемент равен null
+     * @throws NullPointerException если добавляемый {@code element} равен {@code null}
      */
     @Override
     public void addFirst(T element) {
@@ -292,7 +328,7 @@ public class CustomArrayList<T> implements CustomList<T>, Serializable {
      * Вставляет указанный элемент в конец списка.
      *
      * @param element элемент для добавления
-     * @throws NullPointerException если добавляемый {@link @param element} равен null
+     * @throws NullPointerException если добавляемый {@code element} равен {@code null}
      */
     @Override
     public void addLast(T element) {
@@ -303,7 +339,7 @@ public class CustomArrayList<T> implements CustomList<T>, Serializable {
     /**
      * Возвращает итератор по элементам этого списка в правильной последовательности.
      *
-     * @return итератор по элементам этого списка в правильной последовательности
+     * @return итератор по элементам этого списка в порядке добавления элементов
      */
     @Override
     public Iterator<T> iterator() {
@@ -326,12 +362,13 @@ public class CustomArrayList<T> implements CustomList<T>, Serializable {
     }
 
     /**
-     * Возвращает индекс первой вхождения указанного элемента в этом списке,
+     * Возвращает номер позиции первой вхождения указанного элемента в этом списке,
      * или -1, если этот список не содержит элемента.
      *
      * @param element элемент для поиска
      * @return i - индекс первого вхождения указанного элемента,
      *         или -1, если этот список не содержит элемента
+     * @throws NullPointerException если искомый {@code element} равен {@code null}
      */
     @Override
     public int indexOf(Object element) {
@@ -352,8 +389,7 @@ public class CustomArrayList<T> implements CustomList<T>, Serializable {
      *
      * @param element элемент, наличие которого в этом списке нужно проверить
      * @return true, если этот список содержит указанный элемент
-     * @throws NullPointerException если указанный элемент null
-     *         и этот список не допускает null элементы (опционально)
+     * @throws NullPointerException если указанный {@code element} равен {@code null}
      */
     @Override
     public boolean contains(Object element) {
@@ -361,20 +397,15 @@ public class CustomArrayList<T> implements CustomList<T>, Serializable {
         return indexOf(element) != -1;
     }
 
-    private void ensureCapacity(int minCapacity) {
-        if (minCapacity - array.length > 0) {
-            growArray(minCapacity);
-        }
-    }
-
     /**
-     * Удаляет и возвращает первый элемент из списка.
+     * Удаляет первый элемент из списка
+     * и возврашает значение удаленного элемента.
      * <p>
      *     Реализация этого метода не входила в задание, но переорпделение
-     *     этого метода обязательно для имплементации интерфейса {@link @param Collection}.
+     *     этого метода обязательно для имплементации интерфейса {@link Collection}.
      *     Поэтому в данном метде вызывается метод {@link #remove(int)} с параметром 0.
      *     </p>
-     * @return первый элемент списка
+     * @return удалённый элемент, который находился в начале списка
      * @throws NoSuchElementException если список пуст
      * @see #isEmpty()
      * @see #remove(int)
@@ -391,13 +422,14 @@ public class CustomArrayList<T> implements CustomList<T>, Serializable {
     }
 
     /**
-     * Удаляет и возвращает последний элемент из списка.
+     * Удаляет последний элемент из списка
+     * и возврашает значение удаленного элемента.
      * <p>
      *     Реализация этого метода не входила в задание, но переорпделение
      *     этого метода обязательно для имплементации интерфейса {@link @param Collection}.
      *     Поэтому в данном метде вызывается метод {@link #remove(int)} с параметром size - 1.
      *     </p>
-     * @return последний элемент списка
+     * @return удалённый элемент, который находился в конце списка
      * @throws NoSuchElementException если список пуст
      * @see #isEmpty()
      * @see #remove(int)
