@@ -1,7 +1,7 @@
 ## Aston Intensive HW 1. Коллекции
 
 ### Описание проекта
-Проект представляет кастомную `ArrayList` и `LinkedList`,
+Проект представляет кастомную реализацию `ArrayList` и `LinkedList`,
 а так же `LinkedListNode`, выступающий в качестве узла в составе `CustomLinkedList`
 
 ### Дополнительно
