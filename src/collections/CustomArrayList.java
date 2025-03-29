@@ -443,4 +443,14 @@ public class CustomArrayList<T> implements CustomList<T>, Serializable {
         return remove(size - 1);
     }
 
+    /**
+     * Преобразует список в массив объектов
+     *
+     * @return массив, содержащий все элементы списка в правильном порядке
+     * @throws NullPointerException если список содержит null-элементы
+     */
+    @Override
+    public T[] toArray() {
+        return Arrays.copyOf(array, size);
+    }
 }

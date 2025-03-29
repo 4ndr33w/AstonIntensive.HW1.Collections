@@ -3,6 +3,8 @@ package tests.collections.utils;
 import collections.CustomArrayList;
 import collections.CustomLinkedList;
 
+import java.util.List;
+
 /**
  * Утилитный класс для создания тестовых данных и настройки тестовой среды.
  *
@@ -41,7 +43,9 @@ public class TestUtils {
 
     public static final int SIZE_OF_LIST = 10;
 
-    public static CustomLinkedList<String> fillTestLinkedList(){
+    //private static Integer[] testIntegerArray = unsortedIntegerArray();
+
+    public static CustomLinkedList<String> fillTestLinkedListByStrings(){
         CustomLinkedList<String> testLinkedList = new CustomLinkedList<String>();
         testLinkedList.add(FIRST_ELEMENT);
         testLinkedList.add(SECOND_ELEMENT);
@@ -56,7 +60,7 @@ public class TestUtils {
         return testLinkedList;
     }
 
-    public static CustomArrayList<String> fillTestArrayList () {
+    public static CustomArrayList<String> fillTestArrayListByStrings() {
         CustomArrayList<String> testArrayList = new CustomArrayList<>();
         testArrayList.add(FIRST_ELEMENT);
         testArrayList.add(SECOND_ELEMENT);
@@ -70,4 +74,50 @@ public class TestUtils {
         testArrayList.add(TENTH_ELEMENT);
         return testArrayList;
     }
+
+    public static Integer[] unsortedIntegerArray = new Integer[]{5,10,2,7,9,8,4,3,6,1};
+
+    public static Integer[] sortedIntegerArray = new Integer[] {1,2,3,4,5,6,7,8,9,10};
+
+    public static String[]  sortedStringArray = new String[] {"Eight", "Five", "Four", "Nine", "One", "Seven", "Six", "Ten", "Three", "Two"};
+
+    public static CustomLinkedList<Integer> fillTestLinkedListByIntegers(){
+        return new CustomLinkedList<>(unsortedIntegerArray);
+    }
+
+    public static CustomArrayList<Integer> fillTestArrayListByIntegers() {
+        return new CustomArrayList<>(unsortedIntegerArray);
+    }
+
+    public static CustomLinkedList<Integer> customLinkedListIfSingleInteger = new CustomLinkedList<>(new Integer[]{1});
+    public static CustomArrayList<Integer> customArrayListIfSingleInteger = new CustomArrayList<>(new Integer[]{1});
+
+    public static List<Object[]> customCollectionsOfStringsImplementations() {
+        return List.of(
+                new Object[] {fillTestLinkedListByStrings()},
+                new Object[] {fillTestArrayListByStrings()}
+        );
+    }
+
+    public static List<Object[]> customCollectionsOfIntegersImplementations() {
+        return List.of(
+                new Object[] {fillTestLinkedListByIntegers()},
+                new Object[] {fillTestArrayListByIntegers()}
+        );
+    }
+
+    public static List<Object[]> customCollectionOfSingleIntegerElement() {
+        return List.of(
+                new Object[] {customLinkedListIfSingleInteger},
+                new Object[] {customArrayListIfSingleInteger}
+        );
+    }
+
+    public static List<Object[]> customEmptyCollectionsImplementations() {
+        return List.of(
+                new Object[] {new CustomLinkedList<String>()},
+                new Object[] {new CustomArrayList<String>()}
+        );
+    }
+
 }

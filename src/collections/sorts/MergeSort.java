@@ -4,8 +4,29 @@ import collections.interfaces.CustomList;
 
 import java.util.Comparator;
 import java.util.Objects;
+import java.util.RandomAccess;
 
-public class MergeSort {
+/**
+ * Класс, реализующий алгоритм сортировки слиянием (Merge Sort) для пользовательских списков.
+ *
+ * <p>В интерфейсе {@link CustomList} реализованы дефолтные методы: {@link CustomList#mergeSort()} ()} и {@link CustomList#mergeSort(Comparator comparator)}, вызывающие  метод сортировки данного класса</T></p>
+ * <p>По этому нет необходимости вызывать этот класс, а сразу вызывать метод сортировки из класса, реализующего интерфейс {@link CustomList}</p>
+ *
+ * <p>Пример использования:
+ * <pre>{@code
+ * CustomList<String> list = new CustomArrayList<>();
+ * list.add("banana");
+ * list.add("apple");
+ * list.add("orange");
+ *
+ * CustomList<String> sorted = list.mergeSort(String::compareTo);
+ * }</pre>
+ *
+ * @param <T> тип элементов в сортируемом списке
+ * @see Comparator
+ * @see RandomAccess
+ */
+public class MergeSort<T> {
 
     /**
      * Сортирует список с использованием алгоритма сортировки слиянием.

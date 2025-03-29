@@ -504,4 +504,22 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
         }
     }
 
+    /**
+     * Преобразует список в массив объектов
+     *
+     * @return массив, содержащий все элементы списка в правильном порядке
+     * @throws NullPointerException если список содержит null-элементы
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public T[] toArray() {
+        Object[] array = new Object[size];
+
+        int index = 0;
+        for (T item : this) {
+            array[index++] = item;
+        }
+        return (T[]) array;
+    }
+
 }

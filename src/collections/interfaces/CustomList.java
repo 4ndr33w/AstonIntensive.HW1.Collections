@@ -202,4 +202,6 @@ public interface CustomList<T> extends Iterable<T>, RandomAccess {
      * @throws NullPointerException если указанный {@code element} равен {@code null}
      */
     boolean contains(Object element);
+
+    T[] toArray();
 }

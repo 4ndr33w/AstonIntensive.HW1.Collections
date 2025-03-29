@@ -4,7 +4,35 @@ import collections.interfaces.CustomList;
 
 import java.util.Comparator;
 import java.util.Objects;
+import java.util.RandomAccess;
 
+//Comparator<? super T> comparator
+/**
+ * Реализация алгоритма быстрой сортировки (QuickSort) для пользовательских списков.
+ * <p>В интерфейсе {@link CustomList} реализованы дефолтные методы: {@link CustomList#sort()} и {@link CustomList#sort(Comparator comparator)}, вызывающие  метод сортировки данного класса</T></p>
+ * <p>По этому нет необходимости вызывать этот класс, а сразу вызывать метод сортировки из класса, реализующего интерфейс {@link CustomList}</p>
+ *
+ * <p>Особенности реализации:
+ * <ul>
+ *   <li>Опорный элемент (pivot) выбирается как последний элемент подмассива</li>
+ *   <li>Алгоритм не является устойчивым (не сохраняет порядок равных элементов)</li>
+ * </ul>
+ *
+ * <p>Пример использования:
+ * <pre>{@code
+ * CustomList<String> list = new CustomArrayList<>();
+ * list.add("banana");
+ * list.add("apple");
+ * list.add("orange");
+ *
+ * CustomList<String> sorted = list.sort(String::compareTo);
+ * }</pre>
+ *
+ * @param <T> тип элементов в сортируемом списке
+ * @see CustomList
+ * @see Comparator
+ * @see RandomAccess
+ */
 public class QuickSort<T> {
 
     /**
