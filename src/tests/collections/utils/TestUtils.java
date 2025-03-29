@@ -2,22 +2,37 @@ package tests.collections.utils;
 
 import collections.CustomArrayList;
 import collections.CustomLinkedList;
+import collections.interfaces.CustomList;
 
 import java.util.List;
 
 /**
  * Утилитный класс для создания тестовых данных и настройки тестовой среды.
- *
+ * <p>
  * Этот класс содержит набор статических методов и констант, которые используются
  * для инициализации тестовых данных при проведении unit-тестов. Он обеспечивает
  * создание заполненных коллекций для проверки функциональности.
+ * </p>
+ * <table border="1">
+ *   <tr><td>Основные функции</td>
+ *       <td>
+ * <ul>
+ *   <li>Определение констант для тестирования</li>
+ *   <li>Создание тестовых экземпляров коллекций</li>
+ *   <li>Заполнение коллекций тестовыми данными</li>
+ *   <li>Предоставление готовых наборов данных для тестов</li>
+ * </ul>
+ *       </td>
+ *   </tr>
+ *   <tr><td>Используемые assertion</td>
+ *       <td>{@link org.junit.jupiter.api.Assertions}</td>
+ *   </tr>
+ * </table>
  *
- * Основные функции:
- * - Определение констант для тестирования
- * - Создание тестовых экземпляров коллекций
- * - Заполнение коллекций тестовыми данными
- * - Предоставление готовых наборов данных для тестов
+ * @version 1.0
+ * @author 4ndr33w
  *
+ * @see CustomList
  * @see CustomLinkedList
  * @see CustomArrayList
  */
@@ -43,7 +58,6 @@ public class TestUtils {
 
     public static final int SIZE_OF_LIST = 10;
 
-    //private static Integer[] testIntegerArray = unsortedIntegerArray();
 
     public static CustomLinkedList<String> fillTestLinkedListByStrings(){
         CustomLinkedList<String> testLinkedList = new CustomLinkedList<String>();

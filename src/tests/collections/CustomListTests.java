@@ -1,19 +1,15 @@
 package tests.collections;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.Test;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 
 import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotEquals;
 
 import tests.collections.utils.TestUtils;
 import collections.CustomArrayList;
@@ -22,15 +18,29 @@ import collections.interfaces.CustomList;
 
 /**
  * Класс для тестирования реализации интерфейса CustomList.
- *
+ * <p>
  * Этот класс содержит набор тестовых методов, которые проверяют корректность
  * работы различных методов интерфейса CustomList на примерах реализации
  * CustomLinkedList и CustomArrayList.
+ * </p>
  *
- * Основные функции:
- * - Инициализация тестовых данных
- * - Проверка базовых операций с коллекциями
- * - Тестирование различных сценариев использования
+ * <table border="1">
+ *   <tr><td>Основные функции</td>
+ *       <td>
+ * <ul>
+ *   <li>Инициализация тестовых данных</li>
+ *   <li>Проверка базовых операций с коллекциями</li>
+ *   <li>Тестирование различных сценариев использования</li>
+ * </ul>
+ *       </td>
+ *   </tr>
+ *   <tr><td>Используемые assertion</td>
+ *       <td>{@link org.junit.jupiter.api.Assertions}</td>
+ *   </tr>
+ * </table>
+ *
+ * @version 1.0
+ * @author 4ndr33w
  *
  * @see CustomList
  * @see CustomLinkedList
@@ -61,42 +71,42 @@ public class CustomListTests {
     @MethodSource("customCollectionsImplementations")
     @DisplayName("check collection size. Expected successful result")
     public void sizeTestCorrect(CustomList<String> testList) {
-        assertEquals(TestUtils.SIZE_OF_LIST, testList.size());
+        Assertions.assertEquals(TestUtils.SIZE_OF_LIST, testList.size());
     }
 
     @ParameterizedTest
     @MethodSource("customCollectionsImplementations")
     @DisplayName("check collection size. Expected unsuccessful result")
     public void sizeTestIncorrect(CustomList<String> testList) {
-        assertNotEquals(0, testList.size());
+        Assertions.assertNotEquals(0, testList.size());
     }
 
     @ParameterizedTest
     @MethodSource("customEmptyCollectionsImplementations")
     @DisplayName("check CustomLinkedList.isEmpty() method. Returns true")
     public void isEmpty_emptyCustomLinkedList_ReturnsTrue(CustomList<String> testList) {
-        assertTrue(testList.isEmpty());
+        Assertions.assertTrue(testList.isEmpty());
     }
 
     @ParameterizedTest
     @MethodSource("customCollectionsImplementations")
     @DisplayName("check isEmpty method. Returns false")
     public void isEmptyTestReturnsFalse(CustomList<String> testList) {
-        assertFalse(testList.isEmpty());
+        Assertions.assertFalse(testList.isEmpty());
     }
 
     @ParameterizedTest
     @MethodSource("customCollectionsImplementations")
     @DisplayName("check get method. Expected successful result")
     public void getTestReturnsTrue(CustomList<String> testList) {
-        assertEquals(TestUtils.FIRST_ELEMENT, testList.get(0));
+        Assertions.assertEquals(TestUtils.FIRST_ELEMENT, testList.get(0));
     }
 
     @ParameterizedTest
     @MethodSource("customCollectionsImplementations")
     @DisplayName("check get method. Expected unsuccessful result")
     public void getTestReturnsFalse(CustomList<String> testList) {
-        assertNotEquals(TestUtils.ELEMENT_NOT_IN_LIST, testList.get(0));
+        Assertions.assertNotEquals(TestUtils.ELEMENT_NOT_IN_LIST, testList.get(0));
     }
 
     @ParameterizedTest
@@ -110,20 +120,20 @@ public class CustomListTests {
     @MethodSource("customCollectionsImplementations")
     @DisplayName("check add method ( add(T item) ). Expected successful result")
     public void add_Item_TestReturnsTrue(CustomList<String> testList) {
-        assertTrue(testList.add(TestUtils.NEW_ELEMENT));
-        assertEquals(TestUtils.SIZE_OF_LIST + 1, testList.size());
-        assertEquals(TestUtils.NEW_ELEMENT, testList.get(TestUtils.SIZE_OF_LIST));
+        Assertions.assertTrue(testList.add(TestUtils.NEW_ELEMENT));
+        Assertions.assertEquals(TestUtils.SIZE_OF_LIST + 1, testList.size());
+        Assertions.assertEquals(TestUtils.NEW_ELEMENT, testList.get(TestUtils.SIZE_OF_LIST));
     }
 
     @ParameterizedTest
     @MethodSource("customCollectionsImplementations")
     @DisplayName("check add method ( add(int index, T item) ) when 0 < index < list.size() . Expected successful result")
     public void add_ByIndex_TestReturnsTrue(CustomList<String> testList) {
-        assertEquals(TestUtils.SIXTH_ELEMENT, testList.get(5));
+        Assertions.assertEquals(TestUtils.SIXTH_ELEMENT, testList.get(5));
         testList.add(5, TestUtils.NEW_ELEMENT);
-        assertEquals(TestUtils.NEW_ELEMENT, testList.get(5));
-        assertEquals(TestUtils.SIXTH_ELEMENT, testList.get(6));
-        assertEquals(TestUtils.SIZE_OF_LIST + 1, testList.size());
+        Assertions.assertEquals(TestUtils.NEW_ELEMENT, testList.get(5));
+        Assertions.assertEquals(TestUtils.SIXTH_ELEMENT, testList.get(6));
+        Assertions.assertEquals(TestUtils.SIZE_OF_LIST + 1, testList.size());
     }
 
     @ParameterizedTest
@@ -154,10 +164,10 @@ public class CustomListTests {
 
         var size = testList.size();
         testList.addFirst(TestUtils.NEW_ELEMENT);
-        assertEquals(TestUtils.NEW_ELEMENT, testList.get(0));
-        assertEquals(size + 1, testList.size());
-        assertEquals(TestUtils.FIRST_ELEMENT, testList.get(1));
-        assertEquals(TestUtils.TENTH_ELEMENT, testList.get(TestUtils.SIZE_OF_LIST));
+        Assertions.assertEquals(TestUtils.NEW_ELEMENT, testList.get(0));
+        Assertions.assertEquals(size + 1, testList.size());
+        Assertions.assertEquals(TestUtils.FIRST_ELEMENT, testList.get(1));
+        Assertions.assertEquals(TestUtils.TENTH_ELEMENT, testList.get(TestUtils.SIZE_OF_LIST));
     }
 
     @ParameterizedTest
@@ -175,8 +185,8 @@ public class CustomListTests {
 
         var size = testList.size();
         testList.addLast(TestUtils.NEW_ELEMENT);
-        assertEquals(TestUtils.NEW_ELEMENT, testList.get(size));
-        assertEquals(size + 1, testList.size());
+        Assertions.assertEquals(TestUtils.NEW_ELEMENT, testList.get(size));
+        Assertions.assertEquals(size + 1, testList.size());
     }
 
     @ParameterizedTest
@@ -192,11 +202,11 @@ public class CustomListTests {
     @DisplayName("check removeFirst method. Expected successful result")
     public void removeFirstTestReturnsTrue(CustomList<String> testList) {
         var size = testList.size();
-        assertEquals(TestUtils.FIRST_ELEMENT, testList.get(0));
-        assertEquals(TestUtils.SIZE_OF_LIST, size);
+        Assertions.assertEquals(TestUtils.FIRST_ELEMENT, testList.get(0));
+        Assertions.assertEquals(TestUtils.SIZE_OF_LIST, size);
         testList.removeFirst();
-        assertEquals(size - 1, testList.size());
-        assertEquals(TestUtils.SECOND_ELEMENT, testList.get(0));
+        Assertions.assertEquals(size - 1, testList.size());
+        Assertions.assertEquals(TestUtils.SECOND_ELEMENT, testList.get(0));
     }
 
     @ParameterizedTest
@@ -211,11 +221,11 @@ public class CustomListTests {
     @DisplayName("check removeLast method. Expected successful result")
     public void removeLastTestReturnsTrue(CustomList<String> testList) {
         var size = testList.size();
-        assertEquals(TestUtils.SIZE_OF_LIST, size);
-        assertEquals(TestUtils.TENTH_ELEMENT, testList.get(size - 1));
+        Assertions.assertEquals(TestUtils.SIZE_OF_LIST, size);
+        Assertions.assertEquals(TestUtils.TENTH_ELEMENT, testList.get(size - 1));
         testList.removeLast();
-        assertEquals(size - 1, testList.size());
-        assertEquals(TestUtils.NINTH_ELEMENT, testList.get(size - 2));
+        Assertions.assertEquals(size - 1, testList.size());
+        Assertions.assertEquals(TestUtils.NINTH_ELEMENT, testList.get(size - 2));
     }
 
     @ParameterizedTest
@@ -230,18 +240,18 @@ public class CustomListTests {
     @DisplayName("check remove method. Expected successful result")
     public void removeTestReturnsTrue(CustomList<String> testList) {
         var size = testList.size();
-        assertEquals(TestUtils.SIZE_OF_LIST, size);
-        assertEquals(TestUtils.SIXTH_ELEMENT, testList.get(5));
+        Assertions.assertEquals(TestUtils.SIZE_OF_LIST, size);
+        Assertions.assertEquals(TestUtils.SIXTH_ELEMENT, testList.get(5));
         testList.remove(TestUtils.SIXTH_ELEMENT);
-        assertEquals(size - 1, testList.size());
-        assertEquals(TestUtils.SEVENTH_ELEMENT, testList.get(5));
+        Assertions.assertEquals(size - 1, testList.size());
+        Assertions.assertEquals(TestUtils.SEVENTH_ELEMENT, testList.get(5));
     }
 
     @ParameterizedTest
     @MethodSource("customCollectionsImplementations")
     @DisplayName("check remove method ( remove (Object item) ). Expected unsuccessful result")
     public void remove_Item_TestReturnsFalse(CustomList<String> testList) {
-        assertNotEquals(testList.remove(TestUtils.ELEMENT_NOT_IN_LIST), true);
+        Assertions.assertNotEquals(testList.remove(TestUtils.ELEMENT_NOT_IN_LIST), true);
     }
 
     @ParameterizedTest
@@ -255,12 +265,12 @@ public class CustomListTests {
     @MethodSource("customCollectionsImplementations")
     @DisplayName("check remove method ( remove (int index ) when 0 < index < list.size(). Expected successful result")
     public void remove_ByMiddleIndex_ShouldRemoveElement(CustomList<String> testList) {
-        assertEquals(TestUtils.SIZE_OF_LIST, testList.size());
-        assertEquals(TestUtils.SIXTH_ELEMENT, testList.get(5));
+        Assertions.assertEquals(TestUtils.SIZE_OF_LIST, testList.size());
+        Assertions.assertEquals(TestUtils.SIXTH_ELEMENT, testList.get(5));
         String removed = testList.remove(5);
-        assertEquals(TestUtils.SEVENTH_ELEMENT, testList.get(5));
-        assertEquals(TestUtils.SIZE_OF_LIST - 1, testList.size());
-        assertEquals(TestUtils.SIXTH_ELEMENT, removed);
+        Assertions.assertEquals(TestUtils.SEVENTH_ELEMENT, testList.get(5));
+        Assertions.assertEquals(TestUtils.SIZE_OF_LIST - 1, testList.size());
+        Assertions.assertEquals(TestUtils.SIXTH_ELEMENT, removed);
 
     }
 
@@ -282,14 +292,14 @@ public class CustomListTests {
     @MethodSource("customCollectionsImplementations")
     @DisplayName("check indexOf method. Expected successful result")
     public void indexOfTestReturnsTrue(CustomList<String> testList) {
-        assertEquals(5, testList.indexOf(TestUtils.SIXTH_ELEMENT));
+        Assertions.assertEquals(5, testList.indexOf(TestUtils.SIXTH_ELEMENT));
     }
 
     @ParameterizedTest
     @MethodSource("customCollectionsImplementations")
     @DisplayName("check indexOf method. Expected unsuccessful result")
     public void indexOfTestReturnsFalse(CustomList<String> testList) {
-        assertEquals(-1, testList.indexOf(TestUtils.ELEMENT_NOT_IN_LIST));
+        Assertions.assertEquals(-1, testList.indexOf(TestUtils.ELEMENT_NOT_IN_LIST));
     }
 
     @ParameterizedTest
@@ -303,14 +313,14 @@ public class CustomListTests {
     @MethodSource("customCollectionsImplementations")
     @DisplayName("check contains method. Expected successful result")
     public void containsTestReturnsTrue(CustomList<String> testList) {
-        assertTrue(testList.contains(TestUtils.SIXTH_ELEMENT));
+        Assertions.assertTrue(testList.contains(TestUtils.SIXTH_ELEMENT));
     }
 
     @ParameterizedTest
     @MethodSource("customCollectionsImplementations")
     @DisplayName("check contains method. Expected unsuccessful result")
     public void containsTestReturnsFalse(CustomList<String> testList) {
-        assertFalse(testList.contains(TestUtils.ELEMENT_NOT_IN_LIST));
+        Assertions.assertFalse(testList.contains(TestUtils.ELEMENT_NOT_IN_LIST));
     }
 
     @ParameterizedTest
@@ -324,10 +334,10 @@ public class CustomListTests {
     @MethodSource("customCollectionsImplementations")
     @DisplayName("check clear method. Expected successful result")
     public void clearTestReturnsTrue(CustomList<String> testList) {
-        assertEquals(TestUtils.SIZE_OF_LIST, testList.size());
-        assertFalse(testList.isEmpty());
+        Assertions.assertEquals(TestUtils.SIZE_OF_LIST, testList.size());
+        Assertions.assertFalse(testList.isEmpty());
         testList.clear();
-        assertEquals(0, testList.size());
-        assertTrue(testList.isEmpty());
+        Assertions.assertEquals(0, testList.size());
+        Assertions.assertTrue(testList.isEmpty());
     }
 }

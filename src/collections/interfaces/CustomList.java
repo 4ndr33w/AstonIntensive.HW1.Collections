@@ -17,7 +17,10 @@ import java.util.RandomAccess;
  * <p>
  *      Так же интерфейс  позволяет получать быстрый доступ к
  *      элементам коллекции с использованием индексов (возможности дополнены интерфейсом {@link RandomAccess})
- * </p>
+ *
+ * @version 1.0
+ * @author 4ndr33w
+ *
  * @param <T> тип элементов, которые может содержать список
  * @see Iterable
  * @see RandomAccess
@@ -203,5 +206,11 @@ public interface CustomList<T> extends Iterable<T>, RandomAccess {
      */
     boolean contains(Object element);
 
+    /**
+     * Преобразует коллекцию в массив объектов
+     *
+     * @return массив, содержащий все элементы списка в исходном порядке
+     * @throws NullPointerException если список содержит null-элементы
+     */
     T[] toArray();
 }

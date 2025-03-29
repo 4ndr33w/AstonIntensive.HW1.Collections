@@ -28,6 +28,9 @@ import java.util.RandomAccess;
  * CustomList<String> sorted = list.sort(String::compareTo);
  * }</pre>
  *
+ * @version 1.0
+ * @author 4ndr33w
+ *
  * @param <T> тип элементов в сортируемом списке
  * @see CustomList
  * @see Comparator

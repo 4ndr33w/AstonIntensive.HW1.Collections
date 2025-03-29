@@ -17,6 +17,10 @@ import collections.interfaces.CustomList;
  * - Обеспечивает произвольный доступ O(1) по индексу
  * - Автоматически расширяет внутренний массив при необходимости
  * </p>
+ *
+ * @version 1.0
+ * @author 4ndr33w
+ *
  * @param <T> тип хранимых элементов
  * @see CustomList
  * @see Iterable
@@ -31,12 +35,12 @@ public class CustomArrayList<T> implements CustomList<T>, Serializable {
     /**
      * Массив для хранения элементов списка элементов типа Т
      */
-    private T[] array;
+    transient private T[] array;
 
     /**
      * Текущий размер списка (количество элементов)
      */
-    private int size = 0;
+    transient private int size = 0;
 
     /**
      * Создает новый пустой список с начальной емкостью по умолчанию
@@ -172,9 +176,6 @@ public class CustomArrayList<T> implements CustomList<T>, Serializable {
      * @param index индекс, по которому должен быть вставлен указанный элемент
      * @param element элемент для вставки
      * @throws IndexOutOfBoundsException если {@code index} выходит за пределы
-     * <p>
-     *     (index < 0 || index >= size)
-     * </p>
      * @throws NullPointerException если {@code element} равен {@code null}
      */
     @Override
@@ -197,10 +198,6 @@ public class CustomArrayList<T> implements CustomList<T>, Serializable {
      * @param index позиция возвращаемого элемента
      * @return элемент в указанной позиции
      * @throws IndexOutOfBoundsException если {@code index} выходит за границы допустимого диапазона
-     * <p>
-     *         (index < 0 || index >= size)
-     * </p>
-
      */
     @Override
     public T get(int index) {
@@ -218,9 +215,6 @@ public class CustomArrayList<T> implements CustomList<T>, Serializable {
      * @param element Новый элемент, который будет установлен на указанную позицию
      * @return объект, который ранее находился на указанной позиции
      * @throws IndexOutOfBoundsException если {@code index} выходит за границы диапазона
-     * <p>
-     *         (index < 0 || index >= size)
-     * </p>
      * @throws NullPointerException если {@code element} равен {@code null}
      */
     @Override
@@ -262,9 +256,6 @@ public class CustomArrayList<T> implements CustomList<T>, Serializable {
      * @param index позиция элемента, который нужно удалить
      * @return элемент, который был удален из списка
      * @throws IndexOutOfBoundsException если {@code index} выходит за пределы допустимого диапазона
-     * <p>
-     *      (index < 0 || index >= size)
-     * </p>
      */
     @Override
     public T remove(int index) {

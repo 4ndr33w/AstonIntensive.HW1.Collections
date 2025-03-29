@@ -22,6 +22,9 @@ import java.util.RandomAccess;
  * CustomList<String> sorted = list.mergeSort(String::compareTo);
  * }</pre>
  *
+ * @version 1.0
+ * @author 4ndr33w
+ *
  * @param <T> тип элементов в сортируемом списке
  * @see Comparator
  * @see RandomAccess

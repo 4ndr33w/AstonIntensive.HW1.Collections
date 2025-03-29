@@ -21,6 +21,10 @@ import collections.interfaces.CustomList;
  * - Не требует предварительного выделения памяти
  * - Эффективно использует память при частых вставках/удалениях
  * </p>
+ *
+ * @version 1.0
+ * @author 4ndr33w
+ *
  * @param <T> тип хранимых элементов
  * @see CustomList
  * @see Iterable
@@ -30,7 +34,7 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
     /**
      * Счетчик изменений для fail-fast поведения
      */
-    transient int modCount = 0; // Счетчик изменений для fail-fast поведения
+    transient int modCount = 0;
     /**
      * Текущий размер списка (количество элементов)
      */
@@ -114,6 +118,7 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
             tail = node;
         }
         size++;
+        modCount++;
         return true;
     }
 
@@ -123,9 +128,6 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
      * @param index позиция, на которую должен быть вставлен указанный элемент
      * @param element элемент для вставки
      * @throws IndexOutOfBoundsException если {@code index} выходит за пределы допустимого диапазона
-     * <p>
-     *         (index < 0 || index >= size)
-     * </p>
      * @throws NullPointerException если {@code element} равен {@code null}
      */
     @Override
@@ -150,6 +152,7 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
         newNode.setNext(previous.getNext());
         previous.setNext(newNode);
 
+        modCount++;
         size++;
     }
 
@@ -159,9 +162,6 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
      * @param index позиция узла, который должен быть возвращен
      * @return узел в указанной позиции в данном списке
      * @throws IndexOutOfBoundsException в случае, если {@code index} выходит за пределы допустимого диапазона
-     * <p>
-     *     (index < 0 || index >= size)
-     * </p>
      */
     private LinkedListNode<T> getNode(int index) {
         Objects.checkIndex(index, size);
@@ -183,9 +183,6 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
      * @param index позиция элемента, который должен быть возвращен
      * @return элемент в указанной позиции списке
      * @throws IndexOutOfBoundsException в случае, если {@code index} выходит за пределы допустимого диапазона
-     * <p>
-     *     (index < 0 || index >= size)
-     * </p>
      */
     @Override
     public T get(int index) {
@@ -203,9 +200,6 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
      * @param element Новый элемент, который будет установлен в узле на указанной позиции
      * @return объект, который ранее находился в узле на указанной позиции
      * @throws IndexOutOfBoundsException если {@code index} выходит за границы диапазона
-     * <p>
-     *         (index < 0 || index >= size)
-     * </p>
      * @throws NullPointerException если {@code element} равен {@code null}
      */
     @Override
@@ -216,7 +210,10 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
         LinkedListNode<T> current = getNode(index);
         T oldValue = current.getNode();
 
-        current.setNode(element);
+        if (!Objects.equals(oldValue, element)) {
+            current.setNode(element);
+            modCount++;
+        }
 
         return oldValue;
     }
@@ -255,6 +252,7 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
                         tail = null;
                     }
                 }
+                modCount++;
                 size--;
                 return true;
             }
@@ -271,9 +269,6 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
      * @param index позиция элемента, который нужно удалить
      * @return элемент, который находился на указанной позиции
      * @throws IndexOutOfBoundsException если {@code index} выходит за пределы допустимого диапазона
-     * <p>
-     *      (index < 0 || index >= size)
-     * </p>
      */
     @Override
     public T remove(int index) {
@@ -290,6 +285,7 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
         LinkedListNode<T> toRemove = prev.getNext();
 
         prev.setNext(toRemove.getNext());
+        modCount++;
         size--;
 
         return toRemove.getNode();
@@ -301,6 +297,7 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
     @Override
     public void clear() {
 
+        modCount++;
         size = 0;
         head = null;
         tail = null;
@@ -332,6 +329,7 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
         if (tail == null) {
             tail = head;
         }
+        modCount++;
         size++;
     }
 
@@ -352,6 +350,7 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
             tail.setNext(newNode);
             tail = newNode;
         }
+        modCount++;
         size++;
     }
 
@@ -376,6 +375,7 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
         } else {
             tail = null;
         }
+        modCount++;
         size--;
         return removedData;
     }
@@ -403,6 +403,7 @@ public class CustomLinkedList<T> implements CustomList<T>, Serializable {
         tail = previous;
         tail.setNext(null);
 
+        modCount++;
         size--;
         return removedData;
     }
